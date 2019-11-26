@@ -1,6 +1,7 @@
 import {HttpMethods} from "../http/";
 import {RequestMapping} from "./util/request/requestMapping";
 import {METADATA_KEY_RESOURCE_MAPPINGS} from "./util/decoratorConstants";
+import {getRequestParameterByFunctionName} from "./httpRequestParameterDecorators";
 
 export function Get(resourcePath: string) {
   return buildHTTPFunctionDecorator(HttpMethods.GET, resourcePath);
@@ -43,18 +44,19 @@ function buildHTTPFunctionDecorator(
       propertyKey: string,
       descriptor: PropertyDescriptor
   ) => {
-    const resourceMapping = buildResourceMapping(httpMethod, propertyKey, resourcePath);
+    const resourceMapping = buildResourceMapping(httpMethod, propertyKey, resourcePath, target);
     let resourceMappings = getResourceMappings(target) || [];
     resourceMappings.push(resourceMapping);
     setResourceMappings(resourceMappings, target);
   };
 }
 
-function buildResourceMapping(httpMethod: HttpMethods, propertyKey: string, resourcePath: string) {
+function buildResourceMapping(httpMethod: HttpMethods, propertyKey: string, resourcePath: string, target: object) {
   const resourceMapping: RequestMapping = {
     httpMethod: httpMethod,
     methodName: propertyKey,
-    resourcePath: resourcePath
+    resourcePath: resourcePath,
+    parameters: getRequestParameterByFunctionName(propertyKey, target) || []
   };
   return resourceMapping;
 }

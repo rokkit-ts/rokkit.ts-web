@@ -3,8 +3,8 @@ import {RequestParameter} from "./util/request/requestParameter";
 
 const REQUEST_PARAM_METADATA_SALT: string = "request-param-";
 
-export function getRequestParameterByFunctionName(functionName: string) {
-
+export function getRequestParameterByFunctionName(functionName: string, target: object): RequestParameter[] | undefined {
+    return Reflect.getMetadata(REQUEST_PARAM_METADATA_SALT+functionName, target);
 }
 
 export function RequestParam(requestParam: string) {
