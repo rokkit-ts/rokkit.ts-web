@@ -30,6 +30,10 @@ export function Options(resourcePath: string) {
   return buildHTTPFunctionDecorator(HttpMethods.OPTIONS, resourcePath);
 }
 
+export function getRequestMappings<T extends new (...args: any) => {}>(constructor: T): RequestMapping[] | undefined {
+  return Reflect.getMetadata(METADATA_KEY_RESOURCE_MAPPINGS, constructor);
+}
+
 function buildHTTPFunctionDecorator(
     httpMethod: HttpMethods,
     resourcePath: string

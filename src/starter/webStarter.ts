@@ -1,4 +1,10 @@
+import {ControllerInformation} from "../component/util/controllerInformation";
 
+const HTTP_CONTROLLERS: ControllerInformation[] = [];
+
+export function addHttpController(controller: ControllerInformation) {
+  HTTP_CONTROLLERS.push(controller);
+}
 
 export class WebStarter {
 
