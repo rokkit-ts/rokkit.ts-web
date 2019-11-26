@@ -1,4 +1,4 @@
-import {HttpMethods} from "../http/httpMethods";
+import {HttpMethods} from "../http/";
 import {RequestMapping} from "./util/request/requestMapping";
 import {METADATA_KEY_RESOURCE_MAPPINGS} from "./util/decoratorConstants";
 
