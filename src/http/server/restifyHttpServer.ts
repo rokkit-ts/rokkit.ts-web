@@ -1,24 +1,31 @@
-import {HttpServer} from "./httpServer";
-import {Server, createServer} from "restify";
-import {HttpMethods} from "../httpMethods";
+import { createServer, plugins, Server } from "restify";
+import { HttpMethods } from "../httpMethods";
+import { HttpServer } from "./httpServer";
 
-export class RestifyHttpServer implements HttpServer{
-
+export class RestifyHttpServer implements HttpServer {
+  private static readonly WELCOME_MESSAGE =
+    "Restify is now up! Running on port:";
+  private static readonly GOODBYE_MESSAGE = "Restify stopped!";
   private readonly restifyInstance: Server;
 
-  constructor(){
+  constructor() {
     this.restifyInstance = createServer();
+    this.restifyInstance.use(plugins.queryParser());
+    this.restifyInstance.use(plugins.bodyParser());
   }
 
-  addRequestHandler<T>(httpMethod: HttpMethods, requestPath: string, handlerFunction: (...args: any[]) => T): Promise<void> {
-
+  public addRequestHandler<T>(
+    httpMethod: HttpMethods,
+    requestPath: string,
+    handlerFunction: (req: any, res: any) => any
+  ): Promise<void> {
     switch (httpMethod) {
       case HttpMethods.GET:
         this.restifyInstance.get(requestPath, handlerFunction);
-          break;
+        break;
       case HttpMethods.POST:
         this.restifyInstance.post(requestPath, handlerFunction);
-          break;
+        break;
       case HttpMethods.PUT:
         this.restifyInstance.put(requestPath, handlerFunction);
         break;
@@ -39,18 +46,17 @@ export class RestifyHttpServer implements HttpServer{
     return Promise.resolve();
   }
 
-  run(): Promise<void> {
-    return this.restifyInstance.listen(8080, function () {
-      console.log("Restify running");
+  public run(): Promise<void> {
+    return this.restifyInstance.listen(8080, () => {
+      console.log(RestifyHttpServer.WELCOME_MESSAGE);
       return Promise.resolve();
     });
   }
 
-  stop(): Promise<void> {
-    return this.restifyInstance.close(function () {
-      console.log("Restify stopped");
+  public stop(): Promise<void> {
+    return this.restifyInstance.close(() => {
+      console.log(RestifyHttpServer.GOODBYE_MESSAGE);
       return Promise.resolve();
-    })
+    });
   }
-
 }
