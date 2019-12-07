@@ -1,17 +1,20 @@
 language: node_js
 node_js:
-- '10.16'
+  - "10.16"
 jobs:
   include:
-  - stage: unit-tests
-    name: Unit Tests
-    script: npm test
-  - stage: deploy
-    name: Deploy to NPM
-    script: npm run-script build
-    deploy:
-      provider: npm
-      api_key:
-        secure: jCEfFGwGdN/zVTRs1ilXgSzffmMQiCg/2FOpV6+S/1Qco3d5Z3SDZL4k9y5uPRAmkb7qJ4UsDfIhW8ePKgFMkEe7vafnhpdrAJXBdqZbeeJo59GcVAfmtWTQqz34c4QkrqU7Sr/+AlfNiTFJV5SHXqMEBJn07qA3UqE+AzlUJbZdCkCManVpBd9i25rouFicHX9mfeIuMfAN0H+qO4cX2oix2QXDZ5EkozHSqFpG/RuI1Ixrf6cpaGXxagN4/eGFhxZnY+rCEAH4z8B7/APRU9CyY1/qg8aMExN9+WQNZH3rqzlA6gLRfBDshaP5ft4l1S21DLo4oSA07s44WB5BC/eZTRrQ9J+LcDs7KEUv+qYvmGJucDPM7npPjYQnRbTm5PBklIcF9f4JskXlSAuie6UrtFZI2PUwXuaWhEsoIldt/jsHQbwwMpKlL3DJfZkRH9JDIkZEEqqiRwlD7b+L0EOveTkpAEz0GWrJEsdmGKCT1NI+XZXMNY4kh0LQGcYKorG8MTXhb+aCfIg3II/z9mKidjvZ77gcnfaRTStDrjDcgk17dBmoXfu8BDqilPsOliEBIQxgViWwDoTcu9rFmC/wHdo4e+uyzJIj4tVRw6uRQ0s3nk5GjknL0winQTO10+nIoXsm9i+0u+LskO3DOBOrASU0/CWsGtvmKYoNqT0=
-      on:
-        tags: true
+    - stage: unit-tests
+      name: Unit Tests
+      script: npm test
+    - stage: deploy
+      name: Deploy to NPM
+      script: npm run-script build
+      deploy:
+        provider: npm
+        edge: true
+        email: "$NPM_USER"
+        api_key: "$NPM_TOKEN"
+        on:
+          tags: true
+          repo: rokkit-ts/rokkit.ts-web
+        skip_cleanup: true
