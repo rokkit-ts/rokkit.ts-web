@@ -12,23 +12,36 @@ export function addHttpController(controller: ControllerInformation) {
 
 export class WebStarter {
   private httpServer: HttpServer | undefined;
+  private instanceMap: Map<string, any>;
   private requestHandlerFactory: RequestHandlerFactory;
 
   constructor() {
+    this.instanceMap = new Map();
     this.requestHandlerFactory = new RequestHandlerFactory();
-  }
-
-  public async initializeModule(configuration: any): Promise<void> {
-    this.httpServer = new RestifyHttpServer();
-    await this.httpServer.run();
   }
 
   public async injectDependencies(
     instanceMap: Map<string, any>
   ): Promise<void> {
-    Promise.all(
+    this.instanceMap = instanceMap;
+  }
+
+  public async runModule(configuration: any): Promise<void> {
+    this.httpServer = new RestifyHttpServer();
+    await this.mapControllerToInstances();
+    await this.httpServer.run();
+  }
+
+  public async shoutDownModule(): Promise<void> {
+    if (this.httpServer) {
+      await this.httpServer.stop();
+    }
+  }
+
+  private async mapControllerToInstances(): Promise<void> {
+    await Promise.all(
       HTTP_CONTROLLERS.map(async controllerInformation => {
-        const controllerInstance: any = instanceMap.get(
+        const controllerInstance: any = this.instanceMap.get(
           controllerInformation.controllerName
         );
         await Promise.all(
@@ -42,12 +55,7 @@ export class WebStarter {
         );
       })
     );
-  }
-
-  public async shoutDownModule(): Promise<void> {
-    if (this.httpServer) {
-      await this.httpServer.stop();
-    }
+    return Promise.resolve();
   }
 
   private addRequestHandlerFunctionToHttpServer(
