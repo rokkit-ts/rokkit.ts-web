@@ -1,8 +1,7 @@
+import { AbstractModule } from "@rokkit.ts/abstract-module";
 import { ControllerInformation } from "../component/util/controllerInformation";
 import { RequestMapping } from "../component/util/request/requestMapping";
-import { HttpServer } from "../http/server/httpServer";
-import { RequestHandlerFactory } from "../http/server/requestHandlerFactory";
-import { RestifyHttpServer } from "../http/server/restifyHttpServer";
+import { HttpServer, RequestHandlerFactory, RestifyHttpServer } from "../http";
 
 const HTTP_CONTROLLERS: ControllerInformation[] = [];
 
@@ -10,13 +9,12 @@ export function addHttpController(controller: ControllerInformation) {
   HTTP_CONTROLLERS.push(controller);
 }
 
-export class WebStarter {
+export class WebStarter extends AbstractModule {
   private httpServer: HttpServer | undefined;
-  private instanceMap: Map<string, any>;
   private requestHandlerFactory: RequestHandlerFactory;
 
   constructor() {
-    this.instanceMap = new Map();
+    super();
     this.requestHandlerFactory = new RequestHandlerFactory();
   }
 
