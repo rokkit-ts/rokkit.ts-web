@@ -1,3 +1,4 @@
+import "reflect-metadata";
 import { RequestParameter } from "./util/request/requestParameter";
 import { RequestParameterType } from "./util/request/requestParameterType";
 
