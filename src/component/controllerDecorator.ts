@@ -1,5 +1,5 @@
 import { Injectable } from "@rokkit.ts/dependency-injection";
-import { addHttpController } from "../starter";
+import { registerHttpController } from "../starter";
 import { getRequestMappings } from "./httpRequestDecorators";
 
 export function Controller(
@@ -9,7 +9,9 @@ export function Controller(
 ): Function {
   return <T extends new (...args: any[]) => {}>(constructor: T) => {
     Injectable(fileName, contextName)(constructor);
-    addHttpController(createControllerInformation(constructor, resourcePath));
+    registerHttpController(
+      createControllerInformation(constructor, resourcePath)
+    );
   };
 }
 

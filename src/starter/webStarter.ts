@@ -5,7 +5,7 @@ import { HttpServer, RequestHandlerFactory, RestifyHttpServer } from "../http";
 
 const HTTP_CONTROLLERS: ControllerInformation[] = [];
 
-export function addHttpController(controller: ControllerInformation) {
+export function registerHttpController(controller: ControllerInformation) {
   HTTP_CONTROLLERS.push(controller);
 }
 
