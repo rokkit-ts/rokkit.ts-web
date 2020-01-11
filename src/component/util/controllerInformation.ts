@@ -1,4 +1,4 @@
-import {RequestMapping} from "./request/requestMapping";
+import { RequestMapping } from "./request/requestMapping";
 
 export interface ControllerInformation {
   basePath: string | undefined;

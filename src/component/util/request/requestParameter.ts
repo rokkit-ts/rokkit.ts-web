@@ -1,4 +1,4 @@
-import {RequestParameterTypes} from "./requestParameterTypes";
+import { RequestParameterTypes } from "./requestParameterTypes";
 
 export interface RequestParameter {
   index: number;
