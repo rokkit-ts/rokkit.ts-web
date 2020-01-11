@@ -1,7 +1,7 @@
-import {HttpMethods} from "../http/";
-import {RequestMapping} from "./util/request/requestMapping";
-import {METADATA_KEY_RESOURCE_MAPPINGS} from "./util/decoratorConstants";
-import {getRequestParameterByFunctionName} from "./httpRequestParameterDecorators";
+import { HttpMethods } from "../http/";
+import { getRequestParameterByFunctionName } from "./httpRequestParameterDecorators";
+import { METADATA_KEY_RESOURCE_MAPPINGS } from "./util/decoratorConstants";
+import { RequestMapping } from "./util/request/requestMapping";
 
 export function Get(resourcePath: string) {
   return buildHTTPFunctionDecorator(HttpMethods.GET, resourcePath);
@@ -31,47 +31,62 @@ export function Options(resourcePath: string) {
   return buildHTTPFunctionDecorator(HttpMethods.OPTIONS, resourcePath);
 }
 
-export function getRequestMappings<T extends new (...args: any) => {}>(constructor: T): RequestMapping[] | undefined {
+export function getRequestMappings<T extends new (...args: any) => {}>(
+  constructor: T
+): RequestMapping[] | undefined {
   return Reflect.getMetadata(METADATA_KEY_RESOURCE_MAPPINGS, constructor);
 }
 
 function buildHTTPFunctionDecorator(
-    httpMethod: HttpMethods,
-    resourcePath: string
+  httpMethod: HttpMethods,
+  resourcePath: string
 ): Function {
   return (
-      target: Object,
-      propertyKey: string,
-      descriptor: PropertyDescriptor
+    target: object,
+    propertyKey: string,
+    descriptor: PropertyDescriptor
   ) => {
-    const resourceMapping = buildResourceMapping(httpMethod, propertyKey, resourcePath, target);
-    let resourceMappings = getResourceMappings(target) || [];
+    const resourceMapping = buildResourceMapping(
+      httpMethod,
+      propertyKey,
+      resourcePath,
+      target
+    );
+    const resourceMappings = getResourceMappings(target) || [];
     resourceMappings.push(resourceMapping);
     setResourceMappings(resourceMappings, target);
   };
 }
 
-function buildResourceMapping(httpMethod: HttpMethods, propertyKey: string, resourcePath: string, target: object) {
+function buildResourceMapping(
+  httpMethod: HttpMethods,
+  propertyKey: string,
+  resourcePath: string,
+  target: object
+) {
   const resourceMapping: RequestMapping = {
-    httpMethod: httpMethod,
+    httpMethod,
     methodName: propertyKey,
-    resourcePath: resourcePath,
-    parameters: getRequestParameterByFunctionName(propertyKey, target) || []
+    parameters: getRequestParameterByFunctionName(propertyKey, target) || [],
+    resourcePath
   };
   return resourceMapping;
 }
 
-function getResourceMappings(target: Object): RequestMapping[] | undefined {
-  return  Reflect.getOwnMetadata(
-      METADATA_KEY_RESOURCE_MAPPINGS,
-      target.constructor
+function getResourceMappings(target: object): RequestMapping[] | undefined {
+  return Reflect.getOwnMetadata(
+    METADATA_KEY_RESOURCE_MAPPINGS,
+    target.constructor
   );
 }
 
-function setResourceMappings(resourceMappings: RequestMapping[], target: Object) {
+function setResourceMappings(
+  resourceMappings: RequestMapping[],
+  target: object
+) {
   Reflect.defineMetadata(
-      METADATA_KEY_RESOURCE_MAPPINGS,
-      resourceMappings,
-      target.constructor
+    METADATA_KEY_RESOURCE_MAPPINGS,
+    resourceMappings,
+    target.constructor
   );
 }
