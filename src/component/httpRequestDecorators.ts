@@ -1,3 +1,4 @@
+import "reflect-metadata";
 import { HttpMethod } from "../http/";
 import { getRequestParameterByFunctionName } from "./httpRequestParameterDecorators";
 import { METADATA_KEY_RESOURCE_MAPPINGS } from "./util/decoratorConstants";
