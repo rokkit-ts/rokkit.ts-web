@@ -1,4 +1,4 @@
-import { createServer, plugins, Server } from "restify";
+import { createServer, plugins, Request, Response, Server } from "restify";
 import { HttpMethods } from "../httpMethods";
 import { HttpServer } from "./httpServer";
 
@@ -17,7 +17,7 @@ export class RestifyHttpServer implements HttpServer {
   public addRequestHandler<T>(
     httpMethod: HttpMethods,
     requestPath: string,
-    handlerFunction: (req: any, res: any) => any
+    handlerFunction: (req: Request, res: Response) => any
   ): Promise<void> {
     switch (httpMethod) {
       case HttpMethods.GET:
