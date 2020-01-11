@@ -7,7 +7,7 @@ import { WebStarter } from "./webStarter";
 
 const web: WebStarter = new WebStarter();
 
-web.initializeModule(undefined).then(() => {
+web.injectDependencies(new Map<string, any>()).then(() => {
   console.log("Starting module");
   const depMaps = new Map<string, any>();
   depMaps.set("ControllerTest", new ControllerTest());
