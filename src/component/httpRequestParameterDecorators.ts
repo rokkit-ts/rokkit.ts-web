@@ -1,5 +1,5 @@
 import { RequestParameter } from "./util/request/requestParameter";
-import { RequestParameterTypes } from "./util/request/requestParameterTypes";
+import { RequestParameterType } from "./util/request/requestParameterType";
 
 const REQUEST_PARAM_METADATA_SALT = "request-param-";
 
@@ -21,7 +21,7 @@ export function RequestParam(requestParam: string) {
   ) {
     buildMetadataRequestParameter(
       requestParam,
-      RequestParameterTypes.REQUEST_PARAMETER,
+      RequestParameterType.REQUEST_PARAMETER,
       target,
       REQUEST_PARAM_METADATA_SALT + propertyKey,
       parameterIndex
@@ -37,7 +37,7 @@ export function QueryParam(queryParam: string) {
   ) {
     buildMetadataRequestParameter(
       queryParam,
-      RequestParameterTypes.QUERY_PARAMETER,
+      RequestParameterType.QUERY_PARAMETER,
       target,
       REQUEST_PARAM_METADATA_SALT + propertyKey,
       parameterIndex
@@ -53,7 +53,7 @@ export function RequestBody() {
   ) {
     buildMetadataRequestParameter(
       "",
-      RequestParameterTypes.BODY,
+      RequestParameterType.BODY,
       target,
       REQUEST_PARAM_METADATA_SALT + propertyKey,
       parameterIndex
@@ -69,7 +69,7 @@ export function RequestHeader(header: string) {
   ) {
     buildMetadataRequestParameter(
       header,
-      RequestParameterTypes.HEADER,
+      RequestParameterType.HEADER,
       target,
       REQUEST_PARAM_METADATA_SALT + propertyKey,
       parameterIndex
@@ -79,7 +79,7 @@ export function RequestHeader(header: string) {
 
 function buildMetadataRequestParameter(
   key: string,
-  decoratorType: RequestParameterTypes,
+  decoratorType: RequestParameterType,
   target: object,
   propertyKey: string,
   parameterIndex: number
@@ -95,7 +95,7 @@ function buildMetadataRequestParameter(
 function createRequestParameter(
   key: string,
   index: number,
-  type: RequestParameterTypes
+  type: RequestParameterType
 ): RequestParameter {
   return { key, index, type };
 }

@@ -1,4 +1,4 @@
-export enum HttpMethods {
+export enum HttpMethod {
   POST,
   PUT,
   PATCH,

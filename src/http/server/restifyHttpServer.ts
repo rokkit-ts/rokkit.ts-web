@@ -1,5 +1,5 @@
 import { createServer, plugins, Request, Response, Server } from "restify";
-import { HttpMethods } from "../httpMethods";
+import { HttpMethod } from "../httpMethod";
 import { HttpServer } from "./httpServer";
 
 export class RestifyHttpServer implements HttpServer {
@@ -15,30 +15,30 @@ export class RestifyHttpServer implements HttpServer {
   }
 
   public addRequestHandler<T>(
-    httpMethod: HttpMethods,
+    httpMethod: HttpMethod,
     requestPath: string,
     handlerFunction: (req: Request, res: Response) => any
   ): Promise<void> {
     switch (httpMethod) {
-      case HttpMethods.GET:
+      case HttpMethod.GET:
         this.restifyInstance.get(requestPath, handlerFunction);
         break;
-      case HttpMethods.POST:
+      case HttpMethod.POST:
         this.restifyInstance.post(requestPath, handlerFunction);
         break;
-      case HttpMethods.PUT:
+      case HttpMethod.PUT:
         this.restifyInstance.put(requestPath, handlerFunction);
         break;
-      case HttpMethods.PATCH:
+      case HttpMethod.PATCH:
         this.restifyInstance.patch(requestPath, handlerFunction);
         break;
-      case HttpMethods.DELETE:
+      case HttpMethod.DELETE:
         this.restifyInstance.del(requestPath, handlerFunction);
         break;
-      case HttpMethods.OPTIONS:
+      case HttpMethod.OPTIONS:
         this.restifyInstance.opts(requestPath, handlerFunction);
         break;
-      case HttpMethods.HEAD:
+      case HttpMethod.HEAD:
         this.restifyInstance.head(requestPath, handlerFunction);
         break;
     }

@@ -1,8 +1,8 @@
-import { HttpMethods } from "../../../http";
+import { HttpMethod } from "../../../http";
 import { RequestParameter } from "./requestParameter";
 
 export interface RequestMapping {
-  httpMethod: HttpMethods;
+  httpMethod: HttpMethod;
   resourcePath: string;
   methodName: string;
   parameters: RequestParameter[];

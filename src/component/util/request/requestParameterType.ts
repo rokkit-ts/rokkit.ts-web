@@ -1,4 +1,4 @@
-export enum RequestParameterTypes {
+export enum RequestParameterType {
   REQUEST_PARAMETER,
   QUERY_PARAMETER,
   BODY,

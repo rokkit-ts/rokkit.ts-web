@@ -1,34 +1,34 @@
-import { HttpMethods } from "../http/";
+import { HttpMethod } from "../http/";
 import { getRequestParameterByFunctionName } from "./httpRequestParameterDecorators";
 import { METADATA_KEY_RESOURCE_MAPPINGS } from "./util/decoratorConstants";
 import { RequestMapping } from "./util/request/requestMapping";
 
 export function Get(resourcePath: string) {
-  return buildHTTPFunctionDecorator(HttpMethods.GET, resourcePath);
+  return buildHTTPFunctionDecorator(HttpMethod.GET, resourcePath);
 }
 
 export function Post(resourcePath: string) {
-  return buildHTTPFunctionDecorator(HttpMethods.POST, resourcePath);
+  return buildHTTPFunctionDecorator(HttpMethod.POST, resourcePath);
 }
 
 export function Put(resourcePath: string) {
-  return buildHTTPFunctionDecorator(HttpMethods.PUT, resourcePath);
+  return buildHTTPFunctionDecorator(HttpMethod.PUT, resourcePath);
 }
 
 export function Patch(resourcePath: string) {
-  return buildHTTPFunctionDecorator(HttpMethods.PATCH, resourcePath);
+  return buildHTTPFunctionDecorator(HttpMethod.PATCH, resourcePath);
 }
 
 export function Delete(resourcePath: string) {
-  return buildHTTPFunctionDecorator(HttpMethods.DELETE, resourcePath);
+  return buildHTTPFunctionDecorator(HttpMethod.DELETE, resourcePath);
 }
 
 export function Head(resourcePath: string) {
-  return buildHTTPFunctionDecorator(HttpMethods.HEAD, resourcePath);
+  return buildHTTPFunctionDecorator(HttpMethod.HEAD, resourcePath);
 }
 
 export function Options(resourcePath: string) {
-  return buildHTTPFunctionDecorator(HttpMethods.OPTIONS, resourcePath);
+  return buildHTTPFunctionDecorator(HttpMethod.OPTIONS, resourcePath);
 }
 
 export function getRequestMappings<T extends new (...args: any) => {}>(
@@ -38,7 +38,7 @@ export function getRequestMappings<T extends new (...args: any) => {}>(
 }
 
 function buildHTTPFunctionDecorator(
-  httpMethod: HttpMethods,
+  httpMethod: HttpMethod,
   resourcePath: string
 ): Function {
   return (
@@ -59,7 +59,7 @@ function buildHTTPFunctionDecorator(
 }
 
 function buildResourceMapping(
-  httpMethod: HttpMethods,
+  httpMethod: HttpMethod,
   propertyKey: string,
   resourcePath: string,
   target: object

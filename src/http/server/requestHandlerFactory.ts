@@ -1,7 +1,7 @@
 import { Request, Response } from "restify";
 import { RequestMapping } from "../../component/util/request/requestMapping";
 import { RequestParameter } from "../../component/util/request/requestParameter";
-import { RequestParameterTypes } from "../../component/util/request/requestParameterTypes";
+import { RequestParameterType } from "../../component/util/request/requestParameterType";
 
 export class RequestHandlerFactory {
   private static callInstanceMethod(
@@ -50,14 +50,14 @@ export class RequestHandlerFactory {
     parameters: RequestParameter[]
   ): any[] {
     return parameters.map(parameter => {
-      if (parameter.type === RequestParameterTypes.BODY) return req.body;
-      if (parameter.type === RequestParameterTypes.REQUEST_PARAMETER) {
+      if (parameter.type === RequestParameterType.BODY) return req.body;
+      if (parameter.type === RequestParameterType.REQUEST_PARAMETER) {
         return req.params[parameter.key];
       }
-      if (parameter.type === RequestParameterTypes.QUERY_PARAMETER) {
+      if (parameter.type === RequestParameterType.QUERY_PARAMETER) {
         return req.query[parameter.key];
       }
-      if (parameter.type === RequestParameterTypes.HEADER) {
+      if (parameter.type === RequestParameterType.HEADER) {
         return req.headers[parameter.key];
       }
     });
