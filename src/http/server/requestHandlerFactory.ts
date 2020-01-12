@@ -1,4 +1,4 @@
-import { Request, Response } from "restify";
+import { Next, Request, Response } from "restify";
 import { RequestMapping } from "../../component/util/request/requestMapping";
 import { RequestParameter } from "../../component/util/request/requestParameter";
 import { RequestParameterType } from "../../component/util/request/requestParameterType";
@@ -27,11 +27,11 @@ export class RequestHandlerFactory {
   public buildHandlerFunction(
     controllerInstance: any,
     requestMapping: RequestMapping
-  ): (req: Request, res: Response) => any {
+  ): (req: Request, res: Response, next: Next) => any {
     const sortedParameters: any[] = RequestHandlerFactory.sortParameters(
       requestMapping.parameters
     );
-    return (req, res) => {
+    return (req, res, next) => {
       const requestHandlerArguments = this.buildHttpHandlerParameters(
         req,
         sortedParameters
@@ -42,6 +42,7 @@ export class RequestHandlerFactory {
         requestHandlerArguments
       );
       res.send(result);
+      return next();
     };
   }
 

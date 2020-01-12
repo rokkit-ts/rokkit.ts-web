@@ -1,4 +1,4 @@
-import { Request, Response } from "restify";
+import { Next, Request, Response } from "restify";
 import { HttpMethod } from "../httpMethod";
 
 export interface HttpServer {
@@ -9,6 +9,6 @@ export interface HttpServer {
   addRequestHandler(
     httpMethod: HttpMethod,
     requestPath: string,
-    handlerFunction: (req: Request, res: Response) => any
+    handlerFunction: (req: Request, res: Response, next: Next) => any
   ): Promise<void>;
 }
