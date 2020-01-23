@@ -11,11 +11,9 @@ export function registerHttpController(controller: ControllerInformation) {
 
 export class WebStarter extends AbstractModule {
   private httpServer: HttpServer | undefined;
-  private requestHandlerFactory: RequestHandlerFactory;
 
   constructor() {
     super();
-    this.requestHandlerFactory = new RequestHandlerFactory();
   }
 
   public async injectDependencies(
@@ -61,7 +59,7 @@ export class WebStarter extends AbstractModule {
     requestMapping: RequestMapping,
     controllerInformation: ControllerInformation
   ) {
-    const handlerFunction = this.requestHandlerFactory.buildHandlerFunction(
+    const handlerFunction = RequestHandlerFactory.buildHandlerFunction(
       controllerInstance,
       requestMapping
     );

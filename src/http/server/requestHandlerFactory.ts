@@ -4,6 +4,27 @@ import { RequestParameter } from "../../component/util/request/requestParameter"
 import { RequestParameterType } from "../../component/util/request/requestParameterType";
 
 export class RequestHandlerFactory {
+  public static buildHandlerFunction(
+    controllerInstance: any,
+    requestMapping: RequestMapping
+  ): (req: Request, res: Response, next: Next) => any {
+    const sortedParameters: any[] = RequestHandlerFactory.sortParameters(
+      requestMapping.parameters
+    );
+    return (req, res, next) => {
+      const requestHandlerArguments = this.buildHttpHandlerParameters(
+        req,
+        sortedParameters
+      );
+      const result = RequestHandlerFactory.callInstanceMethod(
+        controllerInstance,
+        requestMapping,
+        requestHandlerArguments
+      );
+      res.send(200, result);
+      return next();
+    };
+  }
   private static callInstanceMethod(
     controllerInstance: any,
     requestMapping: RequestMapping,
@@ -24,29 +45,7 @@ export class RequestHandlerFactory {
     });
   }
 
-  public buildHandlerFunction(
-    controllerInstance: any,
-    requestMapping: RequestMapping
-  ): (req: Request, res: Response, next: Next) => any {
-    const sortedParameters: any[] = RequestHandlerFactory.sortParameters(
-      requestMapping.parameters
-    );
-    return (req, res, next) => {
-      const requestHandlerArguments = this.buildHttpHandlerParameters(
-        req,
-        sortedParameters
-      );
-      const result = RequestHandlerFactory.callInstanceMethod(
-        controllerInstance,
-        requestMapping,
-        requestHandlerArguments
-      );
-      res.send(result);
-      return next();
-    };
-  }
-
-  private buildHttpHandlerParameters(
+  private static buildHttpHandlerParameters(
     req: Request,
     parameters: RequestParameter[]
   ): any[] {
