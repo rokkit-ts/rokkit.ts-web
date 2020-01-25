@@ -3,6 +3,7 @@
   "version": "0.1.2",
   "description": "The web module to build an RESTFUL API with rokkit.ts",
   "main": "lib/index.js",
+  "types": "lib/index.d.ts",
   "scripts": {
     "test": "mocha -r ts-node/register src/**/*.spec.ts",
     "build": "tsc --build tsconfig.json"
