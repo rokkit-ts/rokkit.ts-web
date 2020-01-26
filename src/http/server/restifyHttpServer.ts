@@ -15,6 +15,7 @@ export class RestifyHttpServer implements HttpServer {
   private static readonly GOODBYE_MESSAGE = "Restify stopped!";
   private readonly restifyInstance: Server;
 
+  // TODO: consume options parameter to configure the restify instance.
   constructor() {
     this.restifyInstance = createServer();
     this.restifyInstance.use(plugins.queryParser());
