@@ -15,11 +15,7 @@ export function getRequestParameterByFunctionName(
 }
 
 export function RequestPathParameter(requestParam: string) {
-  return function parameterDecoratorFactory(
-    target: object,
-    propertyKey: string,
-    parameterIndex: number
-  ) {
+  return (target: object, propertyKey: string, parameterIndex: number) =>
     buildMetadataRequestParameter(
       requestParam,
       RequestParameterType.REQUEST_PARAMETER,
@@ -27,15 +23,10 @@ export function RequestPathParameter(requestParam: string) {
       REQUEST_PARAM_METADATA_SALT + propertyKey,
       parameterIndex
     );
-  };
 }
 
 export function QueryParameter(queryParam: string) {
-  return function parameterDecoratorFactory(
-    target: object,
-    propertyKey: string,
-    parameterIndex: number
-  ) {
+  return (target: object, propertyKey: string, parameterIndex: number) =>
     buildMetadataRequestParameter(
       queryParam,
       RequestParameterType.QUERY_PARAMETER,
@@ -43,31 +34,10 @@ export function QueryParameter(queryParam: string) {
       REQUEST_PARAM_METADATA_SALT + propertyKey,
       parameterIndex
     );
-  };
-}
-
-export function RequestBody() {
-  return function parameterDecoratorFactory(
-    target: object,
-    propertyKey: string,
-    parameterIndex: number
-  ) {
-    buildMetadataRequestParameter(
-      "",
-      RequestParameterType.BODY,
-      target,
-      REQUEST_PARAM_METADATA_SALT + propertyKey,
-      parameterIndex
-    );
-  };
 }
 
 export function RequestHeader(header: string) {
-  return function parameterDecoratorFactory(
-    target: object,
-    propertyKey: string,
-    parameterIndex: number
-  ) {
+  return (target: object, propertyKey: string, parameterIndex: number) =>
     buildMetadataRequestParameter(
       header,
       RequestParameterType.HEADER,
@@ -75,7 +45,39 @@ export function RequestHeader(header: string) {
       REQUEST_PARAM_METADATA_SALT + propertyKey,
       parameterIndex
     );
-  };
+}
+
+export function RequestBody() {
+  return (target: object, propertyKey: string, parameterIndex: number) =>
+    buildMetadataRequestParameter(
+      "",
+      RequestParameterType.BODY,
+      target,
+      REQUEST_PARAM_METADATA_SALT + propertyKey,
+      parameterIndex
+    );
+}
+
+export function Request() {
+  return (target: object, propertyKey: string, parameterIndex: number) =>
+    buildMetadataRequestParameter(
+      "",
+      RequestParameterType.REQUEST,
+      target,
+      REQUEST_PARAM_METADATA_SALT + propertyKey,
+      parameterIndex
+    );
+}
+
+export function Response() {
+  return (target: object, propertyKey: string, parameterIndex: number) =>
+    buildMetadataRequestParameter(
+      "",
+      RequestParameterType.RESPONSE,
+      target,
+      REQUEST_PARAM_METADATA_SALT + propertyKey,
+      parameterIndex
+    );
 }
 
 function buildMetadataRequestParameter(

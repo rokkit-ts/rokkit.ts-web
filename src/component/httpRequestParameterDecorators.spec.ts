@@ -1,14 +1,16 @@
 // tslint:disable:max-classes-per-file
+import { expect } from "chai";
 import { suite, test } from "mocha-typescript";
 import {
   getRequestParameterByFunctionName,
   QueryParameter,
+  Request,
   RequestBody,
   RequestHeader,
-  RequestPathParameter
+  RequestPathParameter,
+  Response
 } from "./httpRequestParameterDecorators";
 import { RequestParameter } from "./util/request/requestParameter";
-import { expect } from "chai";
 import { RequestParameterType } from "./util/request/requestParameterType";
 
 const parameterKey = "test-key";
@@ -24,7 +26,11 @@ export class HttpRequestParameterDecoratorsSpec {
     expect(requestParameter).to.not.be.undefined;
     expect(requestParameter?.index).to.be.eq(paramIndex);
     expect(requestParameter?.type).to.be.eq(requestParameterType);
-    if (requestParameter?.type !== RequestParameterType.BODY) {
+    if (
+      requestParameter?.type !== RequestParameterType.BODY &&
+      requestParameter?.type !== RequestParameterType.REQUEST &&
+      requestParameter?.type !== RequestParameterType.RESPONSE
+    ) {
       expect(requestParameter?.key).to.be.eq(parameterKey);
     }
   }
@@ -41,24 +47,34 @@ export class HttpRequestParameterDecoratorsSpec {
     expect(requestParameters).to.not.be.empty;
 
     HttpRequestParameterDecoratorsSpec.checkRequestParameter(
-      requestParameters[3],
+      requestParameters[5],
       0,
       RequestParameterType.BODY
     );
     HttpRequestParameterDecoratorsSpec.checkRequestParameter(
-      requestParameters[2],
+      requestParameters[4],
       1,
       RequestParameterType.REQUEST_PARAMETER
     );
     HttpRequestParameterDecoratorsSpec.checkRequestParameter(
-      requestParameters[1],
+      requestParameters[3],
       2,
       RequestParameterType.QUERY_PARAMETER
     );
     HttpRequestParameterDecoratorsSpec.checkRequestParameter(
-      requestParameters[0],
+      requestParameters[2],
       3,
       RequestParameterType.HEADER
+    );
+    HttpRequestParameterDecoratorsSpec.checkRequestParameter(
+      requestParameters[1],
+      4,
+      RequestParameterType.REQUEST
+    );
+    HttpRequestParameterDecoratorsSpec.checkRequestParameter(
+      requestParameters[0],
+      5,
+      RequestParameterType.RESPONSE
     );
   }
 }
@@ -69,6 +85,8 @@ class TestClass {
     @RequestBody() body: any,
     @RequestPathParameter(parameterKey) requestParameter: any,
     @QueryParameter(parameterKey) query: any,
-    @RequestHeader(parameterKey) header: any
+    @RequestHeader(parameterKey) header: any,
+    @Request() request: any,
+    @Response() response: any
   ) {}
 }
