@@ -2,10 +2,10 @@
 import { suite, test } from "mocha-typescript";
 import {
   getRequestParameterByFunctionName,
-  QueryParam,
+  QueryParameter,
   RequestBody,
   RequestHeader,
-  RequestParam
+  RequestPathParameter
 } from "./httpRequestParameterDecorators";
 import { RequestParameter } from "./util/request/requestParameter";
 import { expect } from "chai";
@@ -67,8 +67,8 @@ class TestClass {
   // tslint:disable:no-empty
   public testFunction(
     @RequestBody() body: any,
-    @RequestParam(parameterKey) requestParameter: any,
-    @QueryParam(parameterKey) query: any,
+    @RequestPathParameter(parameterKey) requestParameter: any,
+    @QueryParameter(parameterKey) query: any,
     @RequestHeader(parameterKey) header: any
   ) {}
 }

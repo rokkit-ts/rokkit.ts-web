@@ -14,7 +14,7 @@ export function getRequestParameterByFunctionName(
   );
 }
 
-export function RequestParam(requestParam: string) {
+export function RequestPathParameter(requestParam: string) {
   return function parameterDecoratorFactory(
     target: object,
     propertyKey: string,
@@ -30,7 +30,7 @@ export function RequestParam(requestParam: string) {
   };
 }
 
-export function QueryParam(queryParam: string) {
+export function QueryParameter(queryParam: string) {
   return function parameterDecoratorFactory(
     target: object,
     propertyKey: string,
