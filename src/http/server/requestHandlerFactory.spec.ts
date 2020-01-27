@@ -38,6 +38,16 @@ export class RequestHandlerFactorySpec {
           index: 2,
           key: "test",
           type: RequestParameterType.QUERY_PARAMETER
+        },
+        {
+          index: 3,
+          key: "",
+          type: RequestParameterType.REQUEST
+        },
+        {
+          index: 4,
+          key: "",
+          type: RequestParameterType.RESPONSE
         }
       ]
     } as RequestMapping;
@@ -73,6 +83,8 @@ export class RequestHandlerFactorySpec {
     expect(instance.actualInput).to.eq(expectedBodyValue);
     expect(instance.actualPath).to.eq(expectedPathValue);
     expect(instance.actualQuery).to.eq(expectedQueryValue);
+    expect(instance.actualReq).to.eq(requestMock);
+    expect(instance.actualRes).to.eq(responseMock);
     expect(responseSendCount).to.eq(expectedResponseSendCount);
     expect(responseSendBody).to.eq(expectedBodyValue);
     expect(nextCallCount).to.eq(expectedNextHandlerCount);
@@ -85,11 +97,21 @@ class TestClass {
   public actualPath = "";
   public actualInput = "";
   public actualQuery = "";
+  public actualReq = {} as Request;
+  public actualRes = {} as Response;
 
-  public fakeHandler(input: string, path: string, query: string): string {
+  public fakeHandler(
+    input: string,
+    path: string,
+    query: string,
+    req: Request,
+    res: Response
+  ): string {
     this.actualInput = input;
     this.actualPath = path;
     this.actualQuery = query;
+    this.actualReq = req;
+    this.actualRes = res;
     this.called++;
 
     return input;

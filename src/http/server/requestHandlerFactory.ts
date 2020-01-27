@@ -14,6 +14,7 @@ export class RequestHandlerFactory {
     return (req, res, next) => {
       const requestHandlerArguments = this.buildHttpHandlerParameters(
         req,
+        res,
         sortedParameters
       );
       const result = RequestHandlerFactory.callInstanceMethod(
@@ -47,18 +48,23 @@ export class RequestHandlerFactory {
 
   private static buildHttpHandlerParameters(
     req: Request,
+    res: Response,
     parameters: RequestParameter[]
   ): any[] {
     return parameters.map(parameter => {
-      if (parameter.type === RequestParameterType.BODY) return req.body;
-      if (parameter.type === RequestParameterType.REQUEST_PARAMETER) {
-        return req.params[parameter.key];
-      }
-      if (parameter.type === RequestParameterType.QUERY_PARAMETER) {
-        return req.query[parameter.key];
-      }
-      if (parameter.type === RequestParameterType.HEADER) {
-        return req.headers[parameter.key];
+      switch (parameter.type) {
+        case RequestParameterType.BODY:
+          return req.body;
+        case RequestParameterType.REQUEST:
+          return req;
+        case RequestParameterType.RESPONSE:
+          return res;
+        case RequestParameterType.REQUEST_PARAMETER:
+          return req.params[parameter.key];
+        case RequestParameterType.QUERY_PARAMETER:
+          return req.query[parameter.key];
+        case RequestParameterType.HEADER:
+          return req.headers[parameter.key];
       }
     });
   }
