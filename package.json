@@ -51,5 +51,16 @@
   },
   "publishConfig": {
     "access": "public"
-  }
+  },
+  "directories": {
+    "lib": "lib"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rokkit-ts/rokkit.ts-web.git"
+  },
+  "bugs": {
+    "url": "https://github.com/rokkit-ts/rokkit.ts-web/issues"
+  },
+  "homepage": "https://rokkit.dev"
 }
