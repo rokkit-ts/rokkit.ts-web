@@ -1,25 +1,24 @@
-import {
-  createServer,
-  Next,
-  plugins,
-  Request,
-  Response,
-  Server
-} from "restify";
-import { HttpMethod } from "../httpMethod";
-import { HttpServer } from "./httpServer";
+import { createServer, Next, plugins, Request, Response, Server } from 'restify'
+import { HttpMethod } from '../httpMethod'
+import { HttpServer } from './httpServer'
+
+export const createDefaultRestifyServer = (): Server => {
+  const server = createServer()
+  server.use(plugins.queryParser())
+  server.use(plugins.bodyParser())
+  return server
+}
 
 export class RestifyHttpServer implements HttpServer {
   private static readonly WELCOME_MESSAGE =
-    "Restify is now up! Running on port:";
-  private static readonly GOODBYE_MESSAGE = "Restify stopped!";
-  private readonly restifyInstance: Server;
+    'Restify is now up! Running on port:'
+  private static readonly GOODBYE_MESSAGE = 'Restify stopped!'
+  private readonly restifyInstance: Server
 
   // TODO: consume options parameter to configure the restify instance.
-  constructor() {
-    this.restifyInstance = createServer();
-    this.restifyInstance.use(plugins.queryParser());
-    this.restifyInstance.use(plugins.bodyParser());
+  // TODO: should take the server instance as an dependency, should have a fn to create the instance!
+  constructor(restifyInstance: Server) {
+    this.restifyInstance = restifyInstance
   }
 
   public addRequestHandler<T>(
@@ -29,42 +28,42 @@ export class RestifyHttpServer implements HttpServer {
   ): Promise<void> {
     switch (httpMethod) {
       case HttpMethod.GET:
-        this.restifyInstance.get(requestPath, handlerFunction);
-        break;
+        this.restifyInstance.get(requestPath, handlerFunction)
+        break
       case HttpMethod.POST:
-        this.restifyInstance.post(requestPath, handlerFunction);
-        break;
+        this.restifyInstance.post(requestPath, handlerFunction)
+        break
       case HttpMethod.PUT:
-        this.restifyInstance.put(requestPath, handlerFunction);
-        break;
+        this.restifyInstance.put(requestPath, handlerFunction)
+        break
       case HttpMethod.PATCH:
-        this.restifyInstance.patch(requestPath, handlerFunction);
-        break;
+        this.restifyInstance.patch(requestPath, handlerFunction)
+        break
       case HttpMethod.DELETE:
-        this.restifyInstance.del(requestPath, handlerFunction);
-        break;
+        this.restifyInstance.del(requestPath, handlerFunction)
+        break
       case HttpMethod.OPTIONS:
-        this.restifyInstance.opts(requestPath, handlerFunction);
-        break;
+        this.restifyInstance.opts(requestPath, handlerFunction)
+        break
       case HttpMethod.HEAD:
-        this.restifyInstance.head(requestPath, handlerFunction);
-        break;
+        this.restifyInstance.head(requestPath, handlerFunction)
+        break
     }
 
-    return Promise.resolve();
+    return Promise.resolve()
   }
 
   public run(): Promise<void> {
     return this.restifyInstance.listen(8080, () => {
-      console.log(RestifyHttpServer.WELCOME_MESSAGE);
-      return Promise.resolve();
-    });
+      console.log(RestifyHttpServer.WELCOME_MESSAGE)
+      Promise.resolve()
+    })
   }
 
   public stop(): Promise<void> {
     return this.restifyInstance.close(() => {
-      console.log(RestifyHttpServer.GOODBYE_MESSAGE);
-      return Promise.resolve();
-    });
+      console.log(RestifyHttpServer.GOODBYE_MESSAGE)
+      Promise.resolve()
+    })
   }
 }

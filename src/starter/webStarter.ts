@@ -1,36 +1,41 @@
-import { AbstractModule } from "@rokkit.ts/abstract-module";
-import { ControllerInformation } from "../component/util/controllerInformation";
-import { RequestMapping } from "../component/util/request/requestMapping";
-import { HttpServer, RequestHandlerFactory, RestifyHttpServer } from "../http";
+import { AbstractModule } from '@rokkit.ts/abstract-module'
+import { ControllerInformation } from '../component/util/controllerInformation'
+import { RequestMapping } from '../component/util/request/requestMapping'
+import {
+  createDefaultRestifyServer,
+  HttpServer,
+  RequestHandlerFactory,
+  RestifyHttpServer
+} from '../http'
 
-const HTTP_CONTROLLERS: ControllerInformation[] = [];
+const HTTP_CONTROLLERS: ControllerInformation[] = []
 
 export function registerHttpController(controller: ControllerInformation) {
-  HTTP_CONTROLLERS.push(controller);
+  HTTP_CONTROLLERS.push(controller)
 }
 
 export class WebStarter extends AbstractModule {
-  private httpServer: HttpServer | undefined;
+  private httpServer: HttpServer | undefined
 
   constructor() {
-    super();
+    super()
   }
 
   public async injectDependencies(
     instanceMap: Map<string, any>
   ): Promise<void> {
-    this.instanceMap = instanceMap;
+    this.instanceMap = instanceMap
   }
 
   public async runModule(configuration: any): Promise<void> {
-    this.httpServer = new RestifyHttpServer();
-    await this.mapControllerToInstances();
-    await this.httpServer.run();
+    this.httpServer = new RestifyHttpServer(createDefaultRestifyServer())
+    await this.mapControllerToInstances()
+    await this.httpServer.run()
   }
 
   public async shoutDownModule(): Promise<void> {
     if (this.httpServer) {
-      await this.httpServer.stop();
+      await this.httpServer.stop()
     }
   }
 
@@ -39,19 +44,19 @@ export class WebStarter extends AbstractModule {
       HTTP_CONTROLLERS.map(async controllerInformation => {
         const controllerInstance: any = this.instanceMap.get(
           controllerInformation.controllerName
-        );
+        )
         await Promise.all(
           controllerInformation.resourceMappings.map(requestMapping => {
             this.addRequestHandlerFunctionToHttpServer(
               controllerInstance,
               requestMapping,
               controllerInformation
-            );
+            )
           })
-        );
+        )
       })
-    );
-    return Promise.resolve();
+    )
+    return Promise.resolve()
   }
 
   private addRequestHandlerFunctionToHttpServer(
@@ -62,13 +67,13 @@ export class WebStarter extends AbstractModule {
     const handlerFunction = RequestHandlerFactory.buildHandlerFunction(
       controllerInstance,
       requestMapping
-    );
+    )
     if (this.httpServer) {
       this.httpServer.addRequestHandler(
         requestMapping.httpMethod,
         controllerInformation.basePath + requestMapping.resourcePath,
         handlerFunction
-      );
+      )
     }
   }
 }
