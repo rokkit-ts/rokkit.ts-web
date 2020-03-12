@@ -17,8 +17,7 @@ import { HttpMethod } from '../http'
 import { Controller } from './controllerDecorator'
 import { Post } from './httpRequestDecorators'
 import { RequestBody } from './httpRequestParameterDecorators'
-import { ControllerInformation } from './util/controllerInformation'
-import { RequestParameterType } from './util/request/requestParameterType'
+import { ControllerInformation, RequestParameterType } from './utils'
 describe('ControllerDecorator', () => {
   it('should register a controller at the WebStarter', () => {
     // given/when

@@ -12,8 +12,8 @@ import {
   Put
 } from './httpRequestDecorators'
 import { RequestBody } from './httpRequestParameterDecorators'
-import { RequestMapping } from './util/request/requestMapping'
-import { RequestParameterType } from './util/request/requestParameterType'
+import { RequestMapping } from './utils/request/requestMapping'
+import { RequestParameterType } from './utils/request/requestParameterType'
 
 const compareRequestMappings = (a: RequestMapping, b: RequestMapping) => {
   try {

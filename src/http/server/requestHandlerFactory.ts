@@ -1,7 +1,9 @@
 import { Next, Request, Response } from 'restify'
-import { RequestMapping } from '../../component/util/request/requestMapping'
-import { RequestParameter } from '../../component/util/request/requestParameter'
-import { RequestParameterType } from '../../component/util/request/requestParameterType'
+import {
+  RequestMapping,
+  RequestParameter,
+  RequestParameterType
+} from '../../component/utils'
 
 export class RequestHandlerFactory {
   public static buildHandlerFunction(

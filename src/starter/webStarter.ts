@@ -1,6 +1,5 @@
 import { AbstractModule } from '@rokkit.ts/abstract-module'
-import { ControllerInformation } from '../component/util/controllerInformation'
-import { RequestMapping } from '../component/util/request/requestMapping'
+import { ControllerInformation, RequestMapping } from '../component'
 import {
   createDefaultRestifyServer,
   HttpServer,

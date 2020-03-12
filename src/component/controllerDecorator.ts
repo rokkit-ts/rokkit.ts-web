@@ -1,6 +1,6 @@
-import { Injectable } from "@rokkit.ts/dependency-injection";
-import { registerHttpController } from "../starter";
-import { getRequestMappings } from "./httpRequestDecorators";
+import { Injectable } from '@rokkit.ts/dependency-injection'
+import { registerHttpController } from '../starter'
+import { getRequestMappings } from './httpRequestDecorators'
 
 export function Controller(
   resourcePath: string,
@@ -8,11 +8,11 @@ export function Controller(
   contextName?: string
 ): Function {
   return <T extends new (...args: any[]) => {}>(constructor: T) => {
-    Injectable(fileName, contextName)(constructor);
+    Injectable(fileName, contextName)(constructor)
     registerHttpController(
       createControllerInformation(constructor, resourcePath)
-    );
-  };
+    )
+  }
 }
 
 function createControllerInformation<T extends new (...args: any[]) => {}>(
@@ -23,5 +23,5 @@ function createControllerInformation<T extends new (...args: any[]) => {}>(
     basePath: resourcePath,
     controllerName: constructor.name,
     resourceMappings: getRequestMappings(constructor) || []
-  };
+  }
 }

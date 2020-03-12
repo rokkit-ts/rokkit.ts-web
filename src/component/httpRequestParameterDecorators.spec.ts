@@ -8,8 +8,7 @@ import {
   RequestPathParameter,
   Response
 } from './httpRequestParameterDecorators'
-import { RequestParameter } from './util/request/requestParameter'
-import { RequestParameterType } from './util/request/requestParameterType'
+import { RequestParameterType } from './utils'
 
 describe('HttpRequestParameterDecorators', () => {
   it('should add metadata for RequestBody on function', () => {

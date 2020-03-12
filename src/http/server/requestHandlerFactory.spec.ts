@@ -1,6 +1,5 @@
 import { Request, Response } from 'restify'
-import { RequestMapping } from '../../component/util/request/requestMapping'
-import { RequestParameterType } from '../../component/util/request/requestParameterType'
+import { RequestMapping, RequestParameterType } from '../../component'
 import { RequestHandlerFactory } from './requestHandlerFactory'
 import { HttpMethod } from '../httpMethod'
 

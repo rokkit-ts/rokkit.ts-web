@@ -1,41 +1,40 @@
-import "reflect-metadata";
-import { HttpMethod } from "../http/";
-import { getRequestParameterByFunctionName } from "./httpRequestParameterDecorators";
-import { METADATA_KEY_RESOURCE_MAPPINGS } from "./util/decoratorConstants";
-import { RequestMapping } from "./util/request/requestMapping";
+import 'reflect-metadata'
+import { HttpMethod } from '../http/'
+import { getRequestParameterByFunctionName } from './httpRequestParameterDecorators'
+import { METADATA_KEY_RESOURCE_MAPPINGS, RequestMapping } from './utils'
 
 export function Get(resourcePath: string) {
-  return buildHTTPFunctionDecorator(HttpMethod.GET, resourcePath);
+  return buildHTTPFunctionDecorator(HttpMethod.GET, resourcePath)
 }
 
 export function Post(resourcePath: string) {
-  return buildHTTPFunctionDecorator(HttpMethod.POST, resourcePath);
+  return buildHTTPFunctionDecorator(HttpMethod.POST, resourcePath)
 }
 
 export function Put(resourcePath: string) {
-  return buildHTTPFunctionDecorator(HttpMethod.PUT, resourcePath);
+  return buildHTTPFunctionDecorator(HttpMethod.PUT, resourcePath)
 }
 
 export function Patch(resourcePath: string) {
-  return buildHTTPFunctionDecorator(HttpMethod.PATCH, resourcePath);
+  return buildHTTPFunctionDecorator(HttpMethod.PATCH, resourcePath)
 }
 
 export function Delete(resourcePath: string) {
-  return buildHTTPFunctionDecorator(HttpMethod.DELETE, resourcePath);
+  return buildHTTPFunctionDecorator(HttpMethod.DELETE, resourcePath)
 }
 
 export function Head(resourcePath: string) {
-  return buildHTTPFunctionDecorator(HttpMethod.HEAD, resourcePath);
+  return buildHTTPFunctionDecorator(HttpMethod.HEAD, resourcePath)
 }
 
 export function Options(resourcePath: string) {
-  return buildHTTPFunctionDecorator(HttpMethod.OPTIONS, resourcePath);
+  return buildHTTPFunctionDecorator(HttpMethod.OPTIONS, resourcePath)
 }
 
 export function getRequestMappings<T extends new (...args: any) => {}>(
   constructor: T
 ): RequestMapping[] | undefined {
-  return Reflect.getMetadata(METADATA_KEY_RESOURCE_MAPPINGS, constructor);
+  return Reflect.getMetadata(METADATA_KEY_RESOURCE_MAPPINGS, constructor)
 }
 
 function buildHTTPFunctionDecorator(
@@ -52,11 +51,11 @@ function buildHTTPFunctionDecorator(
       propertyKey,
       resourcePath,
       target
-    );
-    const resourceMappings = getResourceMappings(target) || [];
-    resourceMappings.push(resourceMapping);
-    setResourceMappings(resourceMappings, target);
-  };
+    )
+    const resourceMappings = getResourceMappings(target) || []
+    resourceMappings.push(resourceMapping)
+    setResourceMappings(resourceMappings, target)
+  }
 }
 
 function buildResourceMapping(
@@ -70,15 +69,15 @@ function buildResourceMapping(
     methodName: propertyKey,
     parameters: getRequestParameterByFunctionName(propertyKey, target) || [],
     resourcePath
-  };
-  return resourceMapping;
+  }
+  return resourceMapping
 }
 
 function getResourceMappings(target: object): RequestMapping[] | undefined {
   return Reflect.getOwnMetadata(
     METADATA_KEY_RESOURCE_MAPPINGS,
     target.constructor
-  );
+  )
 }
 
 function setResourceMappings(
@@ -89,5 +88,5 @@ function setResourceMappings(
     METADATA_KEY_RESOURCE_MAPPINGS,
     resourceMappings,
     target.constructor
-  );
+  )
 }
