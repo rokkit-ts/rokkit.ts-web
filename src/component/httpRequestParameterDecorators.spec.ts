@@ -1,6 +1,4 @@
 // tslint:disable:max-classes-per-file
-import { expect } from "chai";
-import { suite, test } from "mocha-typescript";
 import {
   getRequestParameterByFunctionName,
   QueryParameter,
@@ -9,84 +7,137 @@ import {
   RequestHeader,
   RequestPathParameter,
   Response
-} from "./httpRequestParameterDecorators";
-import { RequestParameter } from "./util/request/requestParameter";
-import { RequestParameterType } from "./util/request/requestParameterType";
+} from './httpRequestParameterDecorators'
+import { RequestParameter } from './util/request/requestParameter'
+import { RequestParameterType } from './util/request/requestParameterType'
 
-const parameterKey = "test-key";
+describe('HttpRequestParameterDecorators', () => {
+  it('should add metadata for RequestBody on function', () => {
+    // given
+    const instance = new TestClass()
+    const expectedMetaData = [
+      {
+        index: 0,
+        key: '',
+        type: RequestParameterType.BODY
+      }
+    ]
+    // when
+    const actualMetaData = getRequestParameterByFunctionName('body', instance)
+    // then
+    expect(actualMetaData).not.toHaveLength(0)
+    expect(actualMetaData).toEqual(expectedMetaData)
+  })
 
-@suite
-export class HttpRequestParameterDecoratorsSpec {
-  private static checkRequestParameter(
-    requestParameter: RequestParameter | undefined,
-    paramIndex: number,
-    requestParameterType: RequestParameterType
-  ) {
-    // tslint:disable-next-line:no-unused-expression
-    expect(requestParameter).to.not.be.undefined;
-    expect(requestParameter?.index).to.be.eq(paramIndex);
-    expect(requestParameter?.type).to.be.eq(requestParameterType);
-    if (
-      requestParameter?.type !== RequestParameterType.BODY &&
-      requestParameter?.type !== RequestParameterType.REQUEST &&
-      requestParameter?.type !== RequestParameterType.RESPONSE
-    ) {
-      expect(requestParameter?.key).to.be.eq(parameterKey);
-    }
-  }
+  it('should add metadata for RequestPathParameter with key id on function', () => {
+    // given
+    const instance = new TestClass()
+    const expectedMetaData = [
+      {
+        index: 0,
+        key: 'id',
+        type: RequestParameterType.REQUEST_PARAMETER
+      }
+    ]
+    // when
+    const actualMetaData = getRequestParameterByFunctionName(
+      'requestPathParameter',
+      instance
+    )
+    // then
+    expect(actualMetaData).not.toHaveLength(0)
+    expect(actualMetaData).toEqual(expectedMetaData)
+  })
 
-  @test
-  public shouldFindAllRequestParametersOnObject() {
-    const requestParameters = getRequestParameterByFunctionName(
-      "testFunction",
-      new TestClass()
-    ) as RequestParameter[];
+  it('should add metadata for QueryParameter with key name on function', () => {
+    // given
+    const instance = new TestClass()
+    const expectedMetaData = [
+      {
+        index: 0,
+        key: 'name',
+        type: RequestParameterType.QUERY_PARAMETER
+      }
+    ]
+    // when
+    const actualMetaData = getRequestParameterByFunctionName(
+      'queryParameter',
+      instance
+    )
+    // then
+    expect(actualMetaData).not.toHaveLength(0)
+    expect(actualMetaData).toEqual(expectedMetaData)
+  })
 
-    // tslint:disable:no-unused-expression
-    expect(requestParameters).to.not.be.undefined;
-    expect(requestParameters).to.not.be.empty;
+  it('should add metadata for RequestHeader with key forwarded on function', () => {
+    // given
+    const instance = new TestClass()
+    const expectedMetaData = [
+      {
+        index: 0,
+        key: 'forwarded',
+        type: RequestParameterType.HEADER
+      }
+    ]
+    // when
+    const actualMetaData = getRequestParameterByFunctionName(
+      'requestHeader',
+      instance
+    )
+    // then
+    expect(actualMetaData).not.toHaveLength(0)
+    expect(actualMetaData).toEqual(expectedMetaData)
+  })
 
-    HttpRequestParameterDecoratorsSpec.checkRequestParameter(
-      requestParameters[5],
-      0,
-      RequestParameterType.BODY
-    );
-    HttpRequestParameterDecoratorsSpec.checkRequestParameter(
-      requestParameters[4],
-      1,
-      RequestParameterType.REQUEST_PARAMETER
-    );
-    HttpRequestParameterDecoratorsSpec.checkRequestParameter(
-      requestParameters[3],
-      2,
-      RequestParameterType.QUERY_PARAMETER
-    );
-    HttpRequestParameterDecoratorsSpec.checkRequestParameter(
-      requestParameters[2],
-      3,
-      RequestParameterType.HEADER
-    );
-    HttpRequestParameterDecoratorsSpec.checkRequestParameter(
-      requestParameters[1],
-      4,
-      RequestParameterType.REQUEST
-    );
-    HttpRequestParameterDecoratorsSpec.checkRequestParameter(
-      requestParameters[0],
-      5,
-      RequestParameterType.RESPONSE
-    );
-  }
-}
+  it('should add metadata for Request on function', () => {
+    // given
+    const instance = new TestClass()
+    const expectedMetaData = [
+      {
+        index: 0,
+        key: '',
+        type: RequestParameterType.REQUEST
+      }
+    ]
+    // when
+    const actualMetaData = getRequestParameterByFunctionName(
+      'request',
+      instance
+    )
+    // then
+    expect(actualMetaData).not.toHaveLength(0)
+    expect(actualMetaData).toEqual(expectedMetaData)
+  })
+
+  it('should add metadata for Response on function', () => {
+    // given
+    const instance = new TestClass()
+    const expectedMetaData = [
+      {
+        index: 0,
+        key: '',
+        type: RequestParameterType.RESPONSE
+      }
+    ]
+    // when
+    const actualMetaData = getRequestParameterByFunctionName(
+      'response',
+      instance
+    )
+    // then
+    expect(actualMetaData).not.toHaveLength(0)
+    expect(actualMetaData).toEqual(expectedMetaData)
+  })
+})
 
 class TestClass {
   // tslint:disable:no-empty
-  public testFunction(
-    @RequestBody() body: any,
-    @RequestPathParameter(parameterKey) requestParameter: any,
-    @QueryParameter(parameterKey) query: any,
-    @RequestHeader(parameterKey) header: any,
-    @Request() request: any,
-    @Response() response: any
+  public body(@RequestBody() body: any) {}
+  public requestPathParameter(
+    @RequestPathParameter('id') requestParameter: any
   ) {}
+  public queryParameter(@QueryParameter('name') query: any) {}
+  public requestHeader(@RequestHeader('forwarded') header: string) {}
+  public request(@Request() request: any) {}
+  public response(@Response() response: any) {}
 }
