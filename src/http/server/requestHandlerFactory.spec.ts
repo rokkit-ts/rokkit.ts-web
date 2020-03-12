@@ -1,4 +1,3 @@
-import { suite, test } from 'mocha-typescript'
 import { Request, Response } from 'restify'
 import { RequestMapping } from '../../component/util/request/requestMapping'
 import { RequestParameterType } from '../../component/util/request/requestParameterType'
