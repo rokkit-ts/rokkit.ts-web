@@ -8,6 +8,7 @@ const patchMock = jest.fn()
 const deleteMock = jest.fn()
 const optionsMock = jest.fn()
 const headMock = jest.fn()
+
 jest.mock('restify', () => ({
   ...jest.requireActual('restify'),
   createServer: jest.fn().mockReturnValue({
@@ -23,6 +24,7 @@ jest.mock('restify', () => ({
     head: headMock
   })
 }))
+
 import { createServer } from 'restify'
 import {
   createDefaultRestifyServer,
@@ -62,13 +64,10 @@ describe('RestifyHttpServer', () => {
   test('should add get handler function based on HttpMethod to the server', () => {
     // given
     const server = new RestifyHttpServer(createDefaultRestifyServer())
-
     const requestPath = '/test'
     const httpHandler = () => 0
-
     // when
     server.addRequestHandler(HttpMethod.GET, requestPath, httpHandler)
-
     // then
     expect(getMock).toBeCalledTimes(1)
     expect(getMock).toBeCalledWith(requestPath, httpHandler)
@@ -77,7 +76,6 @@ describe('RestifyHttpServer', () => {
   test('should add post handler function based on HttpMethod to the server', () => {
     // given
     const server = new RestifyHttpServer(createDefaultRestifyServer())
-
     const requestPath = '/test'
     const httpHandler = () => 0
 
@@ -91,10 +89,8 @@ describe('RestifyHttpServer', () => {
   test('should add put handler function based on HttpMethod to the server', () => {
     // given
     const server = new RestifyHttpServer(createDefaultRestifyServer())
-
     const requestPath = '/test'
     const httpHandler = () => 0
-
     // when
     server.addRequestHandler(HttpMethod.PUT, requestPath, httpHandler)
     // then
@@ -105,10 +101,8 @@ describe('RestifyHttpServer', () => {
   test('should add patch handler function based on HttpMethod to the server', () => {
     // given
     const server = new RestifyHttpServer(createDefaultRestifyServer())
-
     const requestPath = '/test'
     const httpHandler = () => 0
-
     // when
     server.addRequestHandler(HttpMethod.PATCH, requestPath, httpHandler)
     // then
@@ -119,10 +113,8 @@ describe('RestifyHttpServer', () => {
   test('should add patch handler function based on HttpMethod to the server', () => {
     // given
     const server = new RestifyHttpServer(createDefaultRestifyServer())
-
     const requestPath = '/test'
     const httpHandler = () => 0
-
     // when
     server.addRequestHandler(HttpMethod.DELETE, requestPath, httpHandler)
     // then
@@ -133,10 +125,8 @@ describe('RestifyHttpServer', () => {
   test('should add patch handler function based on HttpMethod to the server', () => {
     // given
     const server = new RestifyHttpServer(createDefaultRestifyServer())
-
     const requestPath = '/test'
     const httpHandler = () => 0
-
     // when
     server.addRequestHandler(HttpMethod.OPTIONS, requestPath, httpHandler)
     // then
@@ -147,10 +137,8 @@ describe('RestifyHttpServer', () => {
   test('should add patch handler function based on HttpMethod to the server', () => {
     // given
     const server = new RestifyHttpServer(createDefaultRestifyServer())
-
     const requestPath = '/test'
     const httpHandler = () => 0
-
     // when
     server.addRequestHandler(HttpMethod.HEAD, requestPath, httpHandler)
     // then

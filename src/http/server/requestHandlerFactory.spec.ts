@@ -1,119 +1,310 @@
-import { expect } from 'chai'
 import { suite, test } from 'mocha-typescript'
 import { Request, Response } from 'restify'
 import { RequestMapping } from '../../component/util/request/requestMapping'
 import { RequestParameterType } from '../../component/util/request/requestParameterType'
 import { RequestHandlerFactory } from './requestHandlerFactory'
+import { HttpMethod } from '../httpMethod'
 
-@suite
-export class RequestHandlerFactorySpec {
-  @test
-  public shouldCreateRequestHandlerFunction() {
-    // Given
-    const expectedResponseSendCount = 1
-    const expectedNextHandlerCount = 1
-    const expectedInstanceCount = 1
-    const expectedBodyValue = 'TEST-BODY-VALUE'
-    const expectedPathValue = 'TEST-PATH-VALUE'
-    const expectedQueryValue = 'TEST-QUERY-VALUE'
-
-    const instance = new TestClass()
-    let responseSendCount = 0
-    let nextCallCount = 0
-    let responseSendBody = ''
-    const requestMapping = {
-      methodName: 'fakeHandler',
-      parameters: [
-        {
-          index: 0,
-          key: '',
-          type: RequestParameterType.BODY
-        },
-        {
-          index: 1,
-          key: 'test',
-          type: RequestParameterType.REQUEST_PARAMETER
-        },
-        {
-          index: 2,
-          key: 'test',
-          type: RequestParameterType.QUERY_PARAMETER
-        },
-        {
-          index: 3,
-          key: '',
-          type: RequestParameterType.REQUEST
-        },
-        {
-          index: 4,
-          key: '',
-          type: RequestParameterType.RESPONSE
-        }
-      ]
-    } as RequestMapping
-
-    const handler = RequestHandlerFactory.buildHandlerFunction(
-      instance,
-      requestMapping
-    )
-
-    const requestMock = {
-      body: expectedBodyValue,
-      params: { test: expectedPathValue },
-      query: { test: expectedQueryValue }
-    } as Request
-
-    const responseMock = {
-      send(code?: number, body?: any, headers?: { [p: string]: string }): any {
-        expect(code).to.eq(200)
-        responseSendBody = body as string
-        responseSendCount++
-      }
-    } as Response
-
-    const nextHandler = () => {
-      nextCallCount++
+describe('RequestHandlerFactory', () => {
+  it('should call RequestHandler', () => {
+    // given
+    const requestMock = {} as Request
+    const responeMock = {} as Response
+    const handlerMock = jest.fn()
+    const instanceMock = { handler: handlerMock }
+    const requestMapping: RequestMapping = {
+      httpMethod: HttpMethod.GET,
+      methodName: 'handler',
+      parameters: [],
+      resourcePath: ''
     }
 
-    // When
-    handler(requestMock, responseMock, nextHandler)
+    // when
+    const requestHandler = RequestHandlerFactory.buildHandlerFunction(
+      instanceMock,
+      requestMapping
+    )
+    // tslint:disable-next-line: no-empty
+    requestHandler(requestMock, responeMock, () => {})
 
-    // Then
-    expect(instance.called).to.eq(expectedInstanceCount)
-    expect(instance.actualInput).to.eq(expectedBodyValue)
-    expect(instance.actualPath).to.eq(expectedPathValue)
-    expect(instance.actualQuery).to.eq(expectedQueryValue)
-    expect(instance.actualReq).to.eq(requestMock)
-    expect(instance.actualRes).to.eq(responseMock)
-    expect(responseSendCount).to.eq(expectedResponseSendCount)
-    expect(responseSendBody).to.eq(expectedBodyValue)
-    expect(nextCallCount).to.eq(expectedNextHandlerCount)
-  }
-}
+    // then
+    expect(handlerMock).toBeCalledTimes(1)
+  })
 
-// tslint:disable-next-line:max-classes-per-file
-class TestClass {
-  public called = 0
-  public actualPath = ''
-  public actualInput = ''
-  public actualQuery = ''
-  public actualReq = {} as Request
-  public actualRes = {} as Response
+  it('should call response send when userHandler returns non void', () => {
+    // given
+    const requestMock = {} as Request
+    const sendMock = jest.fn()
+    const responeMock = { send: sendMock as any } as Response
+    const handlerMock = jest.fn()
+    handlerMock.mockReturnValue('some body')
+    const instanceMock = { handler: handlerMock }
+    const requestMapping: RequestMapping = {
+      httpMethod: HttpMethod.GET,
+      methodName: 'handler',
+      parameters: [],
+      resourcePath: ''
+    }
 
-  public fakeHandler(
-    input: string,
-    path: string,
-    query: string,
-    req: Request,
-    res: Response
-  ): string {
-    this.actualInput = input
-    this.actualPath = path
-    this.actualQuery = query
-    this.actualReq = req
-    this.actualRes = res
-    this.called++
+    // when
+    const requestHandler = RequestHandlerFactory.buildHandlerFunction(
+      instanceMock,
+      requestMapping
+    )
+    // tslint:disable-next-line: no-empty
+    requestHandler(requestMock, responeMock, () => {})
 
-    return input
-  }
-}
+    // then
+    expect(handlerMock).toBeCalledTimes(1)
+    expect(sendMock).toBeCalledTimes(1)
+    expect(sendMock).toHaveBeenCalledWith(200, 'some body')
+  })
+
+  it('should call not response send when userHandler returns void', () => {
+    // given
+    const requestMock = {} as Request
+    const sendMock = jest.fn()
+    const responeMock = { send: sendMock as any } as Response
+    const handlerMock = jest.fn()
+    const instanceMock = { handler: handlerMock }
+    const requestMapping: RequestMapping = {
+      httpMethod: HttpMethod.GET,
+      methodName: 'handler',
+      parameters: [],
+      resourcePath: ''
+    }
+
+    // when
+    const requestHandler = RequestHandlerFactory.buildHandlerFunction(
+      instanceMock,
+      requestMapping
+    )
+    // tslint:disable-next-line: no-empty
+    requestHandler(requestMock, responeMock, () => {})
+
+    // then
+    expect(handlerMock).toBeCalledTimes(1)
+    expect(sendMock).toBeCalledTimes(0)
+  })
+
+  it('should call next function when calling the the reuqest handler', () => {
+    // given
+    const requestMock = {} as Request
+    const responeMock = {} as Response
+    const handlerMock = jest.fn()
+    const instanceMock = { handler: handlerMock }
+    const requestMapping: RequestMapping = {
+      httpMethod: HttpMethod.GET,
+      methodName: 'handler',
+      parameters: [],
+      resourcePath: ''
+    }
+    const nextMock = jest.fn()
+
+    // when
+    const requestHandler = RequestHandlerFactory.buildHandlerFunction(
+      instanceMock,
+      requestMapping
+    )
+    // tslint:disable-next-line: no-empty
+    requestHandler(requestMock, responeMock, nextMock)
+
+    // then
+    expect(handlerMock).toBeCalledTimes(1)
+    expect(nextMock).toBeCalledTimes(1)
+  })
+
+  it('should call RequestHandler and inject body', () => {
+    // given
+    const requestMock = { body: 'test' } as Request
+    const responeMock = {} as Response
+    const handlerMock = jest.fn()
+    const instanceMock = { handler: handlerMock }
+    const requestMapping: RequestMapping = {
+      httpMethod: HttpMethod.GET,
+      methodName: 'handler',
+      parameters: [{ index: 0, key: '', type: RequestParameterType.BODY }],
+      resourcePath: ''
+    }
+
+    // when
+    const requestHandler = RequestHandlerFactory.buildHandlerFunction(
+      instanceMock,
+      requestMapping
+    )
+    // tslint:disable-next-line: no-empty
+    requestHandler(requestMock, responeMock, () => {})
+
+    // then
+    expect(handlerMock).toBeCalledTimes(1)
+    expect(handlerMock).toHaveBeenCalledWith('test')
+  })
+
+  it('should call RequestHandler and inject request', () => {
+    // given
+    const requestMock = { body: 'test' } as Request
+    const responeMock = {} as Response
+    const handlerMock = jest.fn()
+    const instanceMock = { handler: handlerMock }
+    const requestMapping: RequestMapping = {
+      httpMethod: HttpMethod.GET,
+      methodName: 'handler',
+      parameters: [{ index: 0, key: '', type: RequestParameterType.REQUEST }],
+      resourcePath: ''
+    }
+
+    // when
+    const requestHandler = RequestHandlerFactory.buildHandlerFunction(
+      instanceMock,
+      requestMapping
+    )
+    // tslint:disable-next-line: no-empty
+    requestHandler(requestMock, responeMock, () => {})
+
+    // then
+    expect(handlerMock).toBeCalledTimes(1)
+    expect(handlerMock).toHaveBeenCalledWith({ body: 'test' })
+  })
+
+  it('should call RequestHandler and inject response', () => {
+    // given
+    const requestMock = {} as Request
+    const responeMock = { code: 200 } as Response
+    const handlerMock = jest.fn()
+    const instanceMock = { handler: handlerMock }
+    const requestMapping: RequestMapping = {
+      httpMethod: HttpMethod.GET,
+      methodName: 'handler',
+      parameters: [{ index: 0, key: '', type: RequestParameterType.RESPONSE }],
+      resourcePath: ''
+    }
+
+    // when
+    const requestHandler = RequestHandlerFactory.buildHandlerFunction(
+      instanceMock,
+      requestMapping
+    )
+    // tslint:disable-next-line: no-empty
+    requestHandler(requestMock, responeMock, () => {})
+
+    // then
+    expect(handlerMock).toBeCalledTimes(1)
+    expect(handlerMock).toHaveBeenCalledWith({ code: 200 })
+  })
+
+  it('should call RequestHandler and inject a header', () => {
+    // given
+    const requestMock = { headers: { forwarded: 'rokkit.dev' } } as Request
+    const responeMock = {} as Response
+    const handlerMock = jest.fn()
+    const instanceMock = { handler: handlerMock }
+    const requestMapping: RequestMapping = {
+      httpMethod: HttpMethod.GET,
+      methodName: 'handler',
+      parameters: [
+        { index: 0, key: 'forwarded', type: RequestParameterType.HEADER }
+      ],
+      resourcePath: ''
+    }
+
+    // when
+    const requestHandler = RequestHandlerFactory.buildHandlerFunction(
+      instanceMock,
+      requestMapping
+    )
+    // tslint:disable-next-line: no-empty
+    requestHandler(requestMock, responeMock, () => {})
+
+    // then
+    expect(handlerMock).toBeCalledTimes(1)
+    expect(handlerMock).toHaveBeenCalledWith('rokkit.dev')
+  })
+
+  it('should call RequestHandler and inject a request parameter', () => {
+    // given
+    const requestMock = { params: { id: 12 } } as Request
+    const responeMock = {} as Response
+    const handlerMock = jest.fn()
+    const instanceMock = { handler: handlerMock }
+    const requestMapping: RequestMapping = {
+      httpMethod: HttpMethod.GET,
+      methodName: 'handler',
+      parameters: [
+        { index: 0, key: 'id', type: RequestParameterType.REQUEST_PARAMETER }
+      ],
+      resourcePath: ''
+    }
+
+    // when
+    const requestHandler = RequestHandlerFactory.buildHandlerFunction(
+      instanceMock,
+      requestMapping
+    )
+    // tslint:disable-next-line: no-empty
+    requestHandler(requestMock, responeMock, () => {})
+
+    // then
+    expect(handlerMock).toBeCalledTimes(1)
+    expect(handlerMock).toHaveBeenCalledWith(12)
+  })
+
+  it('should call RequestHandler and inject a query parameter', () => {
+    // given
+    const requestMock = { query: { name: 'rokkit.ts' } } as Request
+    const responeMock = {} as Response
+    const handlerMock = jest.fn()
+    const instanceMock = { handler: handlerMock }
+    const requestMapping: RequestMapping = {
+      httpMethod: HttpMethod.GET,
+      methodName: 'handler',
+      parameters: [
+        { index: 0, key: 'name', type: RequestParameterType.QUERY_PARAMETER }
+      ],
+      resourcePath: ''
+    }
+
+    // when
+    const requestHandler = RequestHandlerFactory.buildHandlerFunction(
+      instanceMock,
+      requestMapping
+    )
+    // tslint:disable-next-line: no-empty
+    requestHandler(requestMock, responeMock, () => {})
+
+    // then
+    expect(handlerMock).toBeCalledTimes(1)
+    expect(handlerMock).toHaveBeenCalledWith('rokkit.ts')
+  })
+
+  it('should call RequestHandler and inject a multiple objects', () => {
+    // given
+    const requestMock = {
+      body: 'some body',
+      headers: { forwarded: 'rokkit.dev' }
+    } as Request
+    const responeMock = {} as Response
+    const handlerMock = jest.fn()
+    const instanceMock = { handler: handlerMock }
+    const requestMapping: RequestMapping = {
+      httpMethod: HttpMethod.GET,
+      methodName: 'handler',
+      parameters: [
+        { index: 0, key: '', type: RequestParameterType.BODY },
+        { index: 1, key: 'forwarded', type: RequestParameterType.HEADER }
+      ],
+      resourcePath: ''
+    }
+
+    // when
+    const requestHandler = RequestHandlerFactory.buildHandlerFunction(
+      instanceMock,
+      requestMapping
+    )
+    // tslint:disable-next-line: no-empty
+    requestHandler(requestMock, responeMock, () => {})
+
+    // then
+    expect(handlerMock).toBeCalledTimes(1)
+    expect(handlerMock).toHaveBeenCalledWith('some body', 'rokkit.dev')
+  })
+})
