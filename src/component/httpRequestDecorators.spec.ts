@@ -1,10 +1,6 @@
-// tslint:disable:max-classes-per-file
-// tslint:disable:no-unused-expression
 // tslint:disable:no-empty
 
-import { expect } from "chai";
-import { suite, test } from "mocha-typescript";
-import { HttpMethod } from "../http";
+import { HttpMethod } from '../http'
 import {
   Delete,
   Get,
@@ -14,107 +10,197 @@ import {
   Patch,
   Post,
   Put
-} from "./httpRequestDecorators";
-import { RequestBody } from "./httpRequestParameterDecorators";
-import { RequestMapping } from "./util/request/requestMapping";
+} from './httpRequestDecorators'
+import { RequestBody } from './httpRequestParameterDecorators'
+import { RequestMapping } from './util/request/requestMapping'
+import { RequestParameterType } from './util/request/requestParameterType'
 
-const requestPath = "/test";
-
-@suite
-export class HttpRequestDecoratorsSpec {
-  private static checkResourceMapping(
-    httpRequestDecorators: RequestMapping[],
-    index: number,
-    methodName: string,
-    httpMethod: HttpMethod
-  ) {
-    expect(httpRequestDecorators[index].resourcePath).to.be.eq(requestPath);
-    expect(httpRequestDecorators[index].methodName).to.be.eq(methodName);
-    expect(httpRequestDecorators[index].httpMethod).to.be.eq(httpMethod);
-    expect(httpRequestDecorators[index].parameters).to.not.be.undefined;
-  }
-
-  @test
-  public shouldFindAllHttpRequestMethodsOnObject() {
-    const httpRequestDecorators = getRequestMappings(
-      TestClass
-    ) as RequestMapping[];
-    expect(httpRequestDecorators).to.not.be.undefined;
-    expect(httpRequestDecorators).to.not.be.empty;
-    expect(httpRequestDecorators.length).to.be.eq(7);
-
-    // GET
-    HttpRequestDecoratorsSpec.checkResourceMapping(
-      httpRequestDecorators,
-      0,
-      "get",
-      HttpMethod.GET
-    );
-    expect(httpRequestDecorators[0].parameters).to.not.be.empty;
-    // POST
-    HttpRequestDecoratorsSpec.checkResourceMapping(
-      httpRequestDecorators,
-      1,
-      "post",
-      HttpMethod.POST
-    );
-    expect(httpRequestDecorators[1].parameters).to.be.empty;
-    // PUT
-    HttpRequestDecoratorsSpec.checkResourceMapping(
-      httpRequestDecorators,
-      2,
-      "put",
-      HttpMethod.PUT
-    );
-    expect(httpRequestDecorators[2].parameters).to.be.empty;
-    // PATCH
-    HttpRequestDecoratorsSpec.checkResourceMapping(
-      httpRequestDecorators,
-      3,
-      "patch",
-      HttpMethod.PATCH
-    );
-    expect(httpRequestDecorators[3].parameters).to.be.empty;
-    // DELETE
-    HttpRequestDecoratorsSpec.checkResourceMapping(
-      httpRequestDecorators,
-      4,
-      "delete",
-      HttpMethod.DELETE
-    );
-    expect(httpRequestDecorators[4].parameters).to.be.empty;
-    // HEAD
-    HttpRequestDecoratorsSpec.checkResourceMapping(
-      httpRequestDecorators,
-      5,
-      "head",
-      HttpMethod.HEAD
-    );
-    expect(httpRequestDecorators[5].parameters).to.be.empty;
-    // OPTIONS
-    HttpRequestDecoratorsSpec.checkResourceMapping(
-      httpRequestDecorators,
-      6,
-      "options",
-      HttpMethod.OPTIONS
-    );
-    expect(httpRequestDecorators[6].parameters).to.be.empty;
+const compareRequestMappings = (a: RequestMapping, b: RequestMapping) => {
+  try {
+    expect(a).toEqual(b)
+    return true
+  } catch (e) {
+    return false
   }
 }
 
+describe('HttpRequestDecorators', () => {
+  it('should add metadata for @GET decorator', () => {
+    // given
+    const expectedMetaData: RequestMapping = {
+      resourcePath: '/get',
+      httpMethod: HttpMethod.GET,
+      methodName: 'get',
+      parameters: []
+    }
+
+    // when
+    const actualMetaData = getRequestMappings(TestClass)
+    // then
+    expect(actualMetaData).not.toHaveLength(0)
+    expect(
+      actualMetaData?.filter(metaData =>
+        compareRequestMappings(metaData, expectedMetaData)
+      )
+    ).not.toHaveLength(0)
+  })
+
+  it('should add metadata for @GET decorator with Requestbody', () => {
+    // given
+    const expectedMetaData: RequestMapping = {
+      resourcePath: '/body',
+      httpMethod: HttpMethod.GET,
+      methodName: 'body',
+      parameters: [{ type: RequestParameterType.BODY, index: 0, key: '' }]
+    }
+
+    // when
+    const actualMetaData = getRequestMappings(TestClass)
+    // then
+    expect(actualMetaData).not.toHaveLength(0)
+    expect(
+      actualMetaData?.filter(metaData =>
+        compareRequestMappings(metaData, expectedMetaData)
+      )
+    ).not.toHaveLength(0)
+  })
+
+  it('should add metadata for @POST decorator', () => {
+    // given
+    const expectedMetaData: RequestMapping = {
+      resourcePath: '/post',
+      httpMethod: HttpMethod.POST,
+      methodName: 'post',
+      parameters: []
+    }
+
+    // when
+    const actualMetaData = getRequestMappings(TestClass)
+    // then
+    expect(actualMetaData).not.toHaveLength(0)
+    expect(
+      actualMetaData?.filter(metaData =>
+        compareRequestMappings(metaData, expectedMetaData)
+      )
+    ).not.toHaveLength(0)
+  })
+
+  it('should add metadata for @PUT decorator', () => {
+    // given
+    const expectedMetaData: RequestMapping = {
+      resourcePath: '/put',
+      httpMethod: HttpMethod.PUT,
+      methodName: 'put',
+      parameters: []
+    }
+
+    // when
+    const actualMetaData = getRequestMappings(TestClass)
+    // then
+    expect(actualMetaData).not.toHaveLength(0)
+    expect(
+      actualMetaData?.filter(metaData =>
+        compareRequestMappings(metaData, expectedMetaData)
+      )
+    ).not.toHaveLength(0)
+  })
+
+  it('should add metadata for @PATCH decorator', () => {
+    // given
+    const expectedMetaData: RequestMapping = {
+      resourcePath: '/patch',
+      httpMethod: HttpMethod.PATCH,
+      methodName: 'patch',
+      parameters: []
+    }
+
+    // when
+    const actualMetaData = getRequestMappings(TestClass)
+    // then
+    expect(actualMetaData).not.toHaveLength(0)
+    expect(
+      actualMetaData?.filter(metaData =>
+        compareRequestMappings(metaData, expectedMetaData)
+      )
+    ).not.toHaveLength(0)
+  })
+
+  it('should add metadata for @DELETE decorator', () => {
+    // given
+    const expectedMetaData: RequestMapping = {
+      resourcePath: '/delete',
+      httpMethod: HttpMethod.DELETE,
+      methodName: 'delete',
+      parameters: []
+    }
+
+    // when
+    const actualMetaData = getRequestMappings(TestClass)
+    // then
+    expect(actualMetaData).not.toHaveLength(0)
+    expect(
+      actualMetaData?.filter(metaData =>
+        compareRequestMappings(metaData, expectedMetaData)
+      )
+    ).not.toHaveLength(0)
+  })
+
+  it('should add metadata for @OPTIONS decorator', () => {
+    // given
+    const expectedMetaData: RequestMapping = {
+      resourcePath: '/options',
+      httpMethod: HttpMethod.OPTIONS,
+      methodName: 'options',
+      parameters: []
+    }
+
+    // when
+    const actualMetaData = getRequestMappings(TestClass)
+    // then
+    expect(actualMetaData).not.toHaveLength(0)
+    expect(
+      actualMetaData?.filter(metaData =>
+        compareRequestMappings(metaData, expectedMetaData)
+      )
+    ).not.toHaveLength(0)
+  })
+
+  it('should add metadata for @HEAD decorator', () => {
+    // given
+    const expectedMetaData: RequestMapping = {
+      resourcePath: '/head',
+      httpMethod: HttpMethod.HEAD,
+      methodName: 'head',
+      parameters: []
+    }
+
+    // when
+    const actualMetaData = getRequestMappings(TestClass)
+    // then
+    expect(actualMetaData).not.toHaveLength(0)
+    expect(
+      actualMetaData?.filter(metaData =>
+        compareRequestMappings(metaData, expectedMetaData)
+      )
+    ).not.toHaveLength(0)
+  })
+})
+
 class TestClass {
-  @Get(requestPath)
-  public get(@RequestBody() body: any) {}
-  @Post(requestPath)
+  @Get('/get')
+  public get() {}
+  @Get('/body')
+  public body(@RequestBody() body: any) {}
+  @Post('/post')
   public post() {}
-  @Put(requestPath)
+  @Put('/put')
   public put() {}
-  @Patch(requestPath)
+  @Patch('/patch')
   public patch() {}
-  @Delete(requestPath)
+  @Delete('/delete')
   public delete() {}
-  @Head(requestPath)
+  @Head('/head')
   public head() {}
-  @Options(requestPath)
+  @Options('/options')
   public options() {}
 }
