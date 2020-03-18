@@ -1,17 +1,17 @@
 import { AbstractModule } from '@rokkit.ts/abstract-module'
 import { ControllerInformation, RequestMapping } from '../component'
 import {
-  createDefaultRestifyServer,
   HttpServer,
   RequestHandlerFactory,
-  RestifyHttpServer
+  RestifyHttpServer,
+  RokkitServerOptions
 } from '../http'
+import { Server } from 'restify'
 
 const HTTP_CONTROLLERS: ControllerInformation[] = []
 
-export function registerHttpController(controller: ControllerInformation) {
+export const registerHttpController = (controller: ControllerInformation) =>
   HTTP_CONTROLLERS.push(controller)
-}
 
 export class WebStarter extends AbstractModule {
   private httpServer: HttpServer | undefined
@@ -26,8 +26,10 @@ export class WebStarter extends AbstractModule {
     this.instanceMap = instanceMap
   }
 
-  public async runModule(configuration: any): Promise<void> {
-    this.httpServer = new RestifyHttpServer(createDefaultRestifyServer())
+  public async runModule(
+    restifyServerConfiguration?: RokkitServerOptions
+  ): Promise<void> {
+    this.httpServer = new RestifyHttpServer(restifyServerConfiguration)
     await this.mapControllerToInstances()
     await this.httpServer.run()
   }

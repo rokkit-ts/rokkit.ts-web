@@ -26,26 +26,13 @@ jest.mock('restify', () => ({
 }))
 
 import { createServer } from 'restify'
-import {
-  createDefaultRestifyServer,
-  RestifyHttpServer
-} from './restifyHttpServer'
+import { RestifyHttpServer } from './restifyHttpServer'
 import { HttpMethod } from '../httpMethod'
-
-describe('createDefaultRestifyServer', () => {
-  it('should create a default server instance', () => {
-    // when
-    const server = createDefaultRestifyServer()
-    // then
-    expect(createServer).toHaveBeenCalledTimes(1)
-    expect(useMock).toBeCalledTimes(2)
-  })
-})
 
 describe('RestifyHttpServer', () => {
   test('should call listen when starting the server', async () => {
     // given
-    const server = new RestifyHttpServer(createDefaultRestifyServer())
+    const server = new RestifyHttpServer()
     // when
     await server.run()
     // then
@@ -54,7 +41,7 @@ describe('RestifyHttpServer', () => {
 
   test('should call close when stoping the server', async () => {
     // given
-    const server = new RestifyHttpServer(createDefaultRestifyServer())
+    const server = new RestifyHttpServer()
     // when
     await server.stop()
     // then
@@ -63,7 +50,7 @@ describe('RestifyHttpServer', () => {
 
   test('should add get handler function based on HttpMethod to the server', () => {
     // given
-    const server = new RestifyHttpServer(createDefaultRestifyServer())
+    const server = new RestifyHttpServer()
     const requestPath = '/test'
     const httpHandler = () => 0
     // when
@@ -75,7 +62,7 @@ describe('RestifyHttpServer', () => {
 
   test('should add post handler function based on HttpMethod to the server', () => {
     // given
-    const server = new RestifyHttpServer(createDefaultRestifyServer())
+    const server = new RestifyHttpServer()
     const requestPath = '/test'
     const httpHandler = () => 0
 
@@ -88,7 +75,7 @@ describe('RestifyHttpServer', () => {
 
   test('should add put handler function based on HttpMethod to the server', () => {
     // given
-    const server = new RestifyHttpServer(createDefaultRestifyServer())
+    const server = new RestifyHttpServer()
     const requestPath = '/test'
     const httpHandler = () => 0
     // when
@@ -100,7 +87,7 @@ describe('RestifyHttpServer', () => {
 
   test('should add patch handler function based on HttpMethod to the server', () => {
     // given
-    const server = new RestifyHttpServer(createDefaultRestifyServer())
+    const server = new RestifyHttpServer()
     const requestPath = '/test'
     const httpHandler = () => 0
     // when
@@ -112,7 +99,7 @@ describe('RestifyHttpServer', () => {
 
   test('should add patch handler function based on HttpMethod to the server', () => {
     // given
-    const server = new RestifyHttpServer(createDefaultRestifyServer())
+    const server = new RestifyHttpServer()
     const requestPath = '/test'
     const httpHandler = () => 0
     // when
@@ -124,7 +111,7 @@ describe('RestifyHttpServer', () => {
 
   test('should add patch handler function based on HttpMethod to the server', () => {
     // given
-    const server = new RestifyHttpServer(createDefaultRestifyServer())
+    const server = new RestifyHttpServer()
     const requestPath = '/test'
     const httpHandler = () => 0
     // when
@@ -136,7 +123,7 @@ describe('RestifyHttpServer', () => {
 
   test('should add patch handler function based on HttpMethod to the server', () => {
     // given
-    const server = new RestifyHttpServer(createDefaultRestifyServer())
+    const server = new RestifyHttpServer()
     const requestPath = '/test'
     const httpHandler = () => 0
     // when

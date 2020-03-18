@@ -1,24 +1,37 @@
-import { createServer, Next, plugins, Request, Response, Server } from 'restify'
+import {
+  createServer,
+  Next,
+  plugins,
+  Request,
+  Response,
+  Server,
+  ServerOptions
+} from 'restify'
 import { HttpMethod } from '../httpMethod'
 import { HttpServer } from './httpServer'
+import Logger, { createLogger } from 'bunyan'
 
-export const createDefaultRestifyServer = (): Server => {
-  const server = createServer()
-  server.use(plugins.queryParser())
-  server.use(plugins.bodyParser())
-  return server
+export type RokkitServerOptions = ServerOptions & { port?: number }
+
+const DEFAULT_PORT = 8080
+const DEFAULT_LOGGER = createLogger({ name: 'Rokkit.ts WebServer' })
+const DEFAULT_CONFIGURATION: RokkitServerOptions = {
+  port: DEFAULT_PORT,
+  log: DEFAULT_LOGGER,
+  ignoreTrailingSlash: false
 }
 
 export class RestifyHttpServer implements HttpServer {
-  private static readonly WELCOME_MESSAGE =
-    'Restify is now up! Running on port:'
+  private static readonly WELCOME_MESSAGE = 'Restify is now running!'
   private static readonly GOODBYE_MESSAGE = 'Restify stopped!'
   private readonly restifyInstance: Server
+  private readonly port: number
+  private readonly logger: Logger
 
-  // TODO: consume options parameter to configure the restify instance.
-  // TODO: should take the server instance as an dependency, should have a fn to create the instance!
-  constructor(restifyInstance: Server) {
-    this.restifyInstance = restifyInstance
+  constructor(severConfiguration: RokkitServerOptions = DEFAULT_CONFIGURATION) {
+    this.restifyInstance = this.create(severConfiguration)
+    this.port = severConfiguration.port ?? DEFAULT_PORT
+    this.logger = severConfiguration.log ?? DEFAULT_LOGGER
   }
 
   public addRequestHandler<T>(
@@ -54,16 +67,23 @@ export class RestifyHttpServer implements HttpServer {
   }
 
   public run(): Promise<void> {
-    return this.restifyInstance.listen(8080, () => {
-      console.log(RestifyHttpServer.WELCOME_MESSAGE)
+    return this.restifyInstance.listen(this.port, () => {
+      this.logger.info(RestifyHttpServer.WELCOME_MESSAGE)
       Promise.resolve()
     })
   }
 
   public stop(): Promise<void> {
     return this.restifyInstance.close(() => {
-      console.log(RestifyHttpServer.GOODBYE_MESSAGE)
+      this.logger.info(RestifyHttpServer.GOODBYE_MESSAGE)
       Promise.resolve()
     })
+  }
+
+  private create(severConfiguration: ServerOptions): Server {
+    const server = createServer(severConfiguration)
+    server.use(plugins.queryParser())
+    server.use(plugins.bodyParser())
+    return server
   }
 }
