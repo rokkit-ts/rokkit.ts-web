@@ -1,23 +1,19 @@
 // tslint:disable:max-classes-per-file
 // tslint:disable:no-unused-expression
 
-const registerHttpControllerMock = jest.fn()
-
-jest.mock('../starter', () => ({
-  registerHttpController: registerHttpControllerMock
-}))
-
-const injectableMock = jest.fn()
-injectableMock.mockReturnValue(jest.fn)
-jest.mock('@rokkit.ts/dependency-injection', () => ({
-  Injectable: injectableMock
-}))
-
 import { HttpMethod } from '../http'
 import { Controller } from './controllerDecorator'
 import { Post } from './httpRequestDecorators'
 import { RequestBody } from './httpRequestParameterDecorators'
 import { ControllerInformation, RequestParameterType } from './utils'
+import { registerHttpController } from '../starter'
+import { Injectable } from '@rokkit.ts/dependency-injection'
+
+jest.mock('../starter')
+jest.mock('@rokkit.ts/dependency-injection', () => ({
+  Injectable: jest.fn().mockReturnValue(jest.fn)
+}))
+
 describe('ControllerDecorator', () => {
   it('should register a controller at the WebStarter', () => {
     // given/when
@@ -34,13 +30,13 @@ describe('ControllerDecorator', () => {
       ]
     }
     // then
-    expect(registerHttpControllerMock).toHaveBeenCalledTimes(1)
-    expect(registerHttpControllerMock).toHaveBeenCalledWith(expectedController)
+    expect(registerHttpController).toHaveBeenCalledTimes(1)
+    expect(registerHttpController).toHaveBeenCalledWith(expectedController)
   })
 
   it('should register an inject in the dependency injector context', () => {
-    expect(injectableMock).toBeCalledTimes(1)
-    expect(injectableMock).toBeCalledWith(__filename, 'contextName')
+    expect(Injectable).toBeCalledTimes(1)
+    expect(Injectable).toBeCalledWith(__filename, 'contextName')
   })
 })
 

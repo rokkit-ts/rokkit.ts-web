@@ -1,35 +1,39 @@
-const useMock = jest.fn()
-const listenMock = jest.fn()
-const closeMock = jest.fn()
-const getMock = jest.fn()
-const postMock = jest.fn()
-const putMock = jest.fn()
-const patchMock = jest.fn()
-const deleteMock = jest.fn()
-const optionsMock = jest.fn()
-const headMock = jest.fn()
+import { HttpMethod } from '../httpMethod'
+import { RestifyHttpServer } from './restifyHttpServer'
+import { createServer } from 'restify'
 
 jest.mock('restify', () => ({
   ...jest.requireActual('restify'),
-  createServer: jest.fn().mockReturnValue({
-    use: useMock,
-    listen: listenMock,
-    close: closeMock,
-    get: getMock,
-    post: postMock,
-    put: putMock,
-    patch: patchMock,
-    del: deleteMock,
-    opts: optionsMock,
-    head: headMock
-  })
+  createServer: jest.fn()
 }))
 
-import { createServer } from 'restify'
-import { RestifyHttpServer } from './restifyHttpServer'
-import { HttpMethod } from '../httpMethod'
-
 describe('RestifyHttpServer', () => {
+  const useMock = jest.fn()
+  const listenMock = jest.fn()
+  const closeMock = jest.fn()
+  const getMock = jest.fn()
+  const postMock = jest.fn()
+  const putMock = jest.fn()
+  const patchMock = jest.fn()
+  const deleteMock = jest.fn()
+  const optionsMock = jest.fn()
+  const headMock = jest.fn()
+
+  beforeEach(() => {
+    ;(createServer as jest.Mock).mockReturnValue({
+      use: useMock,
+      listen: listenMock,
+      close: closeMock,
+      get: getMock,
+      post: postMock,
+      put: putMock,
+      patch: patchMock,
+      del: deleteMock,
+      opts: optionsMock,
+      head: headMock
+    })
+  })
+
   test('should call listen when starting the server', async () => {
     // given
     const server = new RestifyHttpServer()
