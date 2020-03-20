@@ -19,14 +19,19 @@ export class RequestHandlerFactory {
         res,
         sortedParameters
       )
-      const result = RequestHandlerFactory.callInstanceMethod(
-        controllerInstance,
-        requestMapping,
-        requestHandlerArguments
-      )
 
-      if (result) {
-        res.send(200, result)
+      try {
+        const result = RequestHandlerFactory.callInstanceMethod(
+          controllerInstance,
+          requestMapping,
+          requestHandlerArguments
+        )
+
+        if (result) {
+          res.send(200, result)
+        }
+      } catch (error) {
+        res.send(500, error)
       }
       return next()
     }

@@ -85,6 +85,38 @@ describe('RequestHandlerFactory', () => {
     expect(sendMock).toBeCalledTimes(0)
   })
 
+  it('should call response  with status 500 when userHandler throws error', () => {
+    // given
+    const requestMock = {} as Request
+    const sendMock = jest.fn()
+    const responeMock = { send: sendMock as any } as Response
+    const error = new Error('some error')
+    const handlerMock = jest.fn().mockImplementation(() => {
+      throw error
+    })
+    const instanceMock = { handler: handlerMock }
+    const requestMapping: RequestMapping = {
+      httpMethod: HttpMethod.GET,
+      methodName: 'handler',
+      parameters: [],
+      resourcePath: ''
+    }
+
+    // when
+    const requestHandler = RequestHandlerFactory.buildHandlerFunction(
+      instanceMock,
+      requestMapping
+    )
+    // tslint:disable-next-line: no-empty
+    requestHandler(requestMock, responeMock, () => {})
+
+    // then
+    expect(handlerMock).toBeCalledTimes(1)
+    expect(handlerMock).toThrowError('some error')
+    expect(sendMock).toBeCalledTimes(1)
+    expect(sendMock).toHaveBeenCalledWith(500, error)
+  })
+
   it('should call next function when calling the the reuqest handler', () => {
     // given
     const requestMock = {} as Request
