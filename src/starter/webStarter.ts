@@ -6,7 +6,6 @@ import {
   RestifyHttpServer,
   RokkitServerOptions
 } from '../http'
-import { Server } from 'restify'
 
 const HTTP_CONTROLLERS: ControllerInformation[] = []
 
