@@ -1,7 +1,7 @@
 // tslint:disable:max-classes-per-file
 import {
   getRequestParameterByFunctionName,
-  QueryParameter,
+  RequestQueryParameter,
   Request,
   RequestBody,
   RequestHeader,
@@ -56,7 +56,7 @@ describe('HttpRequestParameterDecorators', () => {
       {
         index: 0,
         key: 'id',
-        type: RequestParameterType.REQUEST_PARAMETER
+        type: RequestParameterType.REQUEST_PATH_PARAMETER
       }
     ]
     // when
@@ -76,7 +76,7 @@ describe('HttpRequestParameterDecorators', () => {
       {
         index: 0,
         key: 'name',
-        type: RequestParameterType.QUERY_PARAMETER
+        type: RequestParameterType.REQUEST_QUERY_PARAMETER
       }
     ]
     // when
@@ -164,7 +164,7 @@ class TestClass {
   public requestPathParameter(
     @RequestPathParameter('id') requestParameter: any
   ) {}
-  public queryParameter(@QueryParameter('name') query: any) {}
+  public queryParameter(@RequestQueryParameter('name') query: any) {}
   public requestHeader(@RequestHeader('forwarded') header: string) {}
   public request(@Request() request: any) {}
   public response(@Response() response: any) {}

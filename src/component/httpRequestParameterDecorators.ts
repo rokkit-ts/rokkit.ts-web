@@ -14,18 +14,18 @@ export function RequestPathParameter(requestParam: string) {
   return (target: object, propertyKey: string, parameterIndex: number) =>
     buildMetadataRequestParameter(
       requestParam,
-      RequestParameterType.REQUEST_PARAMETER,
+      RequestParameterType.REQUEST_PATH_PARAMETER,
       target,
       REQUEST_PARAM_METADATA_SALT + propertyKey,
       parameterIndex
     )
 }
 
-export function QueryParameter(queryParam: string) {
+export function RequestQueryParameter(queryParam: string) {
   return (target: object, propertyKey: string, parameterIndex: number) =>
     buildMetadataRequestParameter(
       queryParam,
-      RequestParameterType.QUERY_PARAMETER,
+      RequestParameterType.REQUEST_QUERY_PARAMETER,
       target,
       REQUEST_PARAM_METADATA_SALT + propertyKey,
       parameterIndex

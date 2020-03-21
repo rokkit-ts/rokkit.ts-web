@@ -333,7 +333,11 @@ describe('RequestHandlerFactory', () => {
       httpMethod: HttpMethod.GET,
       methodName: 'handler',
       parameters: [
-        { index: 0, key: 'id', type: RequestParameterType.REQUEST_PARAMETER }
+        {
+          index: 0,
+          key: 'id',
+          type: RequestParameterType.REQUEST_PATH_PARAMETER
+        }
       ],
       resourcePath: ''
     }
@@ -361,7 +365,11 @@ describe('RequestHandlerFactory', () => {
       httpMethod: HttpMethod.GET,
       methodName: 'handler',
       parameters: [
-        { index: 0, key: 'name', type: RequestParameterType.QUERY_PARAMETER }
+        {
+          index: 0,
+          key: 'name',
+          type: RequestParameterType.REQUEST_QUERY_PARAMETER
+        }
       ],
       resourcePath: ''
     }

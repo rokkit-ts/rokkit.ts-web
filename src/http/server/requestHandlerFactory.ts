@@ -70,9 +70,9 @@ export class RequestHandlerFactory {
           return req
         case RequestParameterType.RESPONSE:
           return res
-        case RequestParameterType.REQUEST_PARAMETER:
+        case RequestParameterType.REQUEST_PATH_PARAMETER:
           return req.params[parameter.key]
-        case RequestParameterType.QUERY_PARAMETER:
+        case RequestParameterType.REQUEST_QUERY_PARAMETER:
           return req.query[parameter.key]
         case RequestParameterType.HEADER:
           return req.headers[parameter.key]
