@@ -6,6 +6,7 @@
 
 export * from './controllerDecorator'
 export * from './httpRequestDecorators'
+export * from './httpRequestParameterDecorators'
 export {
   ControllerInformation,
   RequestMapping,
