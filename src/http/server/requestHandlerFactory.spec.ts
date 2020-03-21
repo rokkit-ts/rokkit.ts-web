@@ -7,7 +7,7 @@ describe('RequestHandlerFactory', () => {
   it('should call RequestHandler', () => {
     // given
     const requestMock = {} as Request
-    const responeMock = {} as Response
+    const responeMock = { send: jest.fn() as any } as Response
     const handlerMock = jest.fn()
     const instanceMock = { handler: handlerMock }
     const requestMapping: RequestMapping = {
@@ -58,7 +58,7 @@ describe('RequestHandlerFactory', () => {
     expect(sendMock).toHaveBeenCalledWith(200, 'some body')
   })
 
-  it('should call not response send when userHandler returns void', () => {
+  it('should send 500 send when userHandler returns undefined', () => {
     // given
     const requestMock = {} as Request
     const sendMock = jest.fn()
@@ -82,7 +82,11 @@ describe('RequestHandlerFactory', () => {
 
     // then
     expect(handlerMock).toBeCalledTimes(1)
-    expect(sendMock).toBeCalledTimes(0)
+    expect(sendMock).toBeCalledTimes(1)
+    expect(sendMock).toHaveBeenCalledWith(
+      500,
+      'Request handler completed with undefined --> most likely the function returns nothing'
+    )
   })
 
   it('should call response  with status 500 when userHandler throws error', () => {
@@ -90,9 +94,8 @@ describe('RequestHandlerFactory', () => {
     const requestMock = {} as Request
     const sendMock = jest.fn()
     const responeMock = { send: sendMock as any } as Response
-    const error = new Error('some error')
     const handlerMock = jest.fn().mockImplementation(() => {
-      throw error
+      throw new Error('some error')
     })
     const instanceMock = { handler: handlerMock }
     const requestMapping: RequestMapping = {
@@ -114,13 +117,13 @@ describe('RequestHandlerFactory', () => {
     expect(handlerMock).toBeCalledTimes(1)
     expect(handlerMock).toThrowError('some error')
     expect(sendMock).toBeCalledTimes(1)
-    expect(sendMock).toHaveBeenCalledWith(500, error)
+    expect(sendMock).toHaveBeenCalledWith(500, 'some error')
   })
 
   it('should call next function when calling the the reuqest handler', () => {
     // given
     const requestMock = {} as Request
-    const responeMock = {} as Response
+    const responeMock = { send: jest.fn() as any } as Response
     const handlerMock = jest.fn()
     const instanceMock = { handler: handlerMock }
     const requestMapping: RequestMapping = {
@@ -144,10 +147,12 @@ describe('RequestHandlerFactory', () => {
     expect(nextMock).toBeCalledTimes(1)
   })
 
-  it('should call RequestHandler and inject body', () => {
+  it('should call RequestHandler and inject body with json', () => {
     // given
-    const requestMock = { body: '{ "data" : "test" }' } as Request
-    const responeMock = {} as Response
+    const requestMock = {
+      body: { data: 'test', subClass: { data: 1 } }
+    } as Request
+    const responeMock = { send: jest.fn() as any } as Response
     const handlerMock = jest.fn()
     const instanceMock = { handler: handlerMock }
     const requestMapping: RequestMapping = {
@@ -174,13 +179,52 @@ describe('RequestHandlerFactory', () => {
 
     // then
     expect(handlerMock).toBeCalledTimes(1)
-    expect(handlerMock).toHaveBeenCalledWith(new BodyClass('test'))
+    expect(handlerMock).toHaveBeenCalledWith(
+      new BodyClass('test', new SubClass(1))
+    )
+  })
+
+  it('should call RequestHandler and inject body with json string', () => {
+    // given
+    const requestMock = {
+      body: '{ "data": "test", "subClass": { "data":1 } }'
+    } as Request
+    const responeMock = { send: jest.fn() as any } as Response
+    const handlerMock = jest.fn()
+    const instanceMock = { handler: handlerMock }
+    const requestMapping: RequestMapping = {
+      httpMethod: HttpMethod.GET,
+      methodName: 'handler',
+      parameters: [
+        {
+          index: 0,
+          key: '',
+          type: RequestParameterType.BODY,
+          bodyType: BodyClass
+        }
+      ],
+      resourcePath: ''
+    }
+
+    // when
+    const requestHandler = RequestHandlerFactory.buildHandlerFunction(
+      instanceMock,
+      requestMapping
+    )
+    // tslint:disable-next-line: no-empty
+    requestHandler(requestMock, responeMock, () => {})
+
+    // then
+    expect(handlerMock).toBeCalledTimes(1)
+    expect(handlerMock).toHaveBeenCalledWith(
+      new BodyClass('test', new SubClass(1))
+    )
   })
 
   it('should call RequestHandler and inject body without Type', () => {
     // given
     const requestMock = { body: '{ "data" : "test" }' } as Request
-    const responeMock = {} as Response
+    const responeMock = { send: jest.fn() as any } as Response
     const handlerMock = jest.fn()
     const instanceMock = { handler: handlerMock }
     const requestMapping: RequestMapping = {
@@ -240,13 +284,16 @@ describe('RequestHandlerFactory', () => {
 
     // then
     expect(sendMock).toBeCalledTimes(1)
-    expect(sendMock).toHaveBeenCalledWith(500, expect.any(Error))
+    expect(sendMock).toHaveBeenCalledWith(
+      500,
+      'Cannot parse RequestBody --> Unexpected token : in JSON at position 8'
+    )
   })
 
   it('should call RequestHandler and inject request', () => {
     // given
     const requestMock = { body: 'test' } as Request
-    const responeMock = {} as Response
+    const responeMock = { send: jest.fn() as any } as Response
     const handlerMock = jest.fn()
     const instanceMock = { handler: handlerMock }
     const requestMapping: RequestMapping = {
@@ -272,7 +319,7 @@ describe('RequestHandlerFactory', () => {
   it('should call RequestHandler and inject response', () => {
     // given
     const requestMock = {} as Request
-    const responeMock = { code: 200 } as Response
+    const responeMock = { send: jest.fn() as any, code: 200 } as Response
     const handlerMock = jest.fn()
     const instanceMock = { handler: handlerMock }
     const requestMapping: RequestMapping = {
@@ -292,13 +339,16 @@ describe('RequestHandlerFactory', () => {
 
     // then
     expect(handlerMock).toBeCalledTimes(1)
-    expect(handlerMock).toHaveBeenCalledWith({ code: 200 })
+    expect(handlerMock).toHaveBeenCalledWith({
+      code: 200,
+      send: expect.any(Function)
+    })
   })
 
   it('should call RequestHandler and inject a header', () => {
     // given
     const requestMock = { headers: { forwarded: 'rokkit.dev' } } as Request
-    const responeMock = {} as Response
+    const responeMock = { send: jest.fn() as any } as Response
     const handlerMock = jest.fn()
     const instanceMock = { handler: handlerMock }
     const requestMapping: RequestMapping = {
@@ -326,7 +376,7 @@ describe('RequestHandlerFactory', () => {
   it('should call RequestHandler and inject a request parameter', () => {
     // given
     const requestMock = { params: { id: 12 } } as Request
-    const responeMock = {} as Response
+    const responeMock = { send: jest.fn() as any } as Response
     const handlerMock = jest.fn()
     const instanceMock = { handler: handlerMock }
     const requestMapping: RequestMapping = {
@@ -358,7 +408,7 @@ describe('RequestHandlerFactory', () => {
   it('should call RequestHandler and inject a query parameter', () => {
     // given
     const requestMock = { query: { name: 'rokkit.ts' } } as Request
-    const responeMock = {} as Response
+    const responeMock = { send: jest.fn() as any } as Response
     const handlerMock = jest.fn()
     const instanceMock = { handler: handlerMock }
     const requestMapping: RequestMapping = {
@@ -393,7 +443,7 @@ describe('RequestHandlerFactory', () => {
       body: 'some body',
       headers: { forwarded: 'rokkit.dev' }
     } as Request
-    const responeMock = {} as Response
+    const responeMock = { send: jest.fn() as any } as Response
     const handlerMock = jest.fn()
     const instanceMock = { handler: handlerMock }
     const requestMapping: RequestMapping = {
@@ -420,9 +470,18 @@ describe('RequestHandlerFactory', () => {
   })
 })
 
+class SubClass {
+  private data: number
+  constructor(data: number) {
+    this.data = data
+  }
+}
+// tslint:disable-next-line: max-classes-per-file
 class BodyClass {
   private data: string
-  constructor(data: string) {
+  private subClass: SubClass
+  constructor(data: string, subClass: SubClass) {
     this.data = data
+    this.subClass = subClass
   }
 }

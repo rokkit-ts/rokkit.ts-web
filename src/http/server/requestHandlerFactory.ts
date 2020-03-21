@@ -29,9 +29,13 @@ export class RequestHandlerFactory {
 
         if (result) {
           res.send(200, result)
+        } else {
+          throw new Error(
+            'Request handler completed with undefined --> most likely the function returns nothing'
+          )
         }
       } catch (error) {
-        res.send(500, error)
+        res.send(500, error.message)
       }
       return next()
     }
@@ -86,9 +90,12 @@ export class RequestHandlerFactory {
   ): any {
     if (bodyType) {
       try {
-        return Object.assign(new bodyType(), JSON.parse(body))
+        return Object.assign(
+          new bodyType(),
+          typeof body === 'string' ? JSON.parse(body) : body
+        )
       } catch (parsingError) {
-        throw new Error(`Cannot parse RequestBody --> ${parsingError}`)
+        throw new Error(`Cannot parse RequestBody --> ${parsingError.message}`)
       }
     } else {
       try {
