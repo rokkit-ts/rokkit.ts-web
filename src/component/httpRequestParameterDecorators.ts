@@ -43,14 +43,17 @@ export function RequestHeader(header: string) {
     )
 }
 
-export function RequestBody() {
+export function RequestBody<T extends new (...args: any[]) => {}>(
+  bodyType?: T
+) {
   return (target: object, propertyKey: string, parameterIndex: number) =>
     buildMetadataRequestParameter(
       '',
       RequestParameterType.BODY,
       target,
       REQUEST_PARAM_METADATA_SALT + propertyKey,
-      parameterIndex
+      parameterIndex,
+      bodyType
     )
 }
 
@@ -81,18 +84,22 @@ function buildMetadataRequestParameter(
   decoratorType: RequestParameterType,
   target: object,
   propertyKey: string,
-  parameterIndex: number
+  parameterIndex: number,
+  bodyType?: new (...args: any[]) => {}
 ): void {
   const requestParams: RequestParameter[] =
     Reflect.getMetadata(propertyKey, target) || []
-  requestParams.push(createRequestParameter(key, parameterIndex, decoratorType))
+  requestParams.push(
+    createRequestParameter(key, parameterIndex, decoratorType, bodyType)
+  )
   Reflect.defineMetadata(propertyKey, requestParams, target)
 }
 
 function createRequestParameter(
   key: string,
   index: number,
-  type: RequestParameterType
+  type: RequestParameterType,
+  bodyType?: new (...args: any[]) => {}
 ): RequestParameter {
-  return { key, index, type }
+  return { key, index, type, bodyType }
 }

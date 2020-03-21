@@ -14,13 +14,13 @@ export class RequestHandlerFactory {
       requestMapping.parameters
     )
     return (req, res, next) => {
-      const requestHandlerArguments = this.buildHttpHandlerParameters(
-        req,
-        res,
-        sortedParameters
-      )
-
       try {
+        const requestHandlerArguments = this.buildHttpHandlerParameters(
+          req,
+          res,
+          sortedParameters
+        )
+
         const result = RequestHandlerFactory.callInstanceMethod(
           controllerInstance,
           requestMapping,
@@ -65,7 +65,7 @@ export class RequestHandlerFactory {
     return parameters.map(parameter => {
       switch (parameter.type) {
         case RequestParameterType.BODY:
-          return req.body
+          return RequestHandlerFactory.parseBody(req.body, parameter.bodyType)
         case RequestParameterType.REQUEST:
           return req
         case RequestParameterType.RESPONSE:
@@ -78,5 +78,24 @@ export class RequestHandlerFactory {
           return req.headers[parameter.key]
       }
     })
+  }
+
+  private static parseBody(
+    body: string,
+    bodyType?: new (...args: any[]) => {}
+  ): any {
+    if (bodyType) {
+      try {
+        return Object.assign(new bodyType(), JSON.parse(body))
+      } catch (parsingError) {
+        throw new Error(`Cannot parse RequestBody --> ${parsingError}`)
+      }
+    } else {
+      try {
+        return JSON.parse(body)
+      } catch (parsingError) {
+        return body
+      }
+    }
   }
 }

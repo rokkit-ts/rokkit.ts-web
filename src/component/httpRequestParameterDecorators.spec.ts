@@ -18,11 +18,32 @@ describe('HttpRequestParameterDecorators', () => {
       {
         index: 0,
         key: '',
-        type: RequestParameterType.BODY
+        type: RequestParameterType.BODY,
+        bodyType: BodyDate
       }
     ]
     // when
     const actualMetaData = getRequestParameterByFunctionName('body', instance)
+    // then
+    expect(actualMetaData).not.toHaveLength(0)
+    expect(actualMetaData).toEqual(expectedMetaData)
+  })
+
+  it('should add metadata for RequestBody on function without BodyType', () => {
+    // given
+    const instance = new TestClass()
+    const expectedMetaData = [
+      {
+        index: 0,
+        key: '',
+        type: RequestParameterType.BODY
+      }
+    ]
+    // when
+    const actualMetaData = getRequestParameterByFunctionName(
+      'bodyWithOutType',
+      instance
+    )
     // then
     expect(actualMetaData).not.toHaveLength(0)
     expect(actualMetaData).toEqual(expectedMetaData)
@@ -129,9 +150,17 @@ describe('HttpRequestParameterDecorators', () => {
   })
 })
 
+class BodyDate {
+  private data = 'test'
+  get Data() {
+    return this.data
+  }
+}
+
 class TestClass {
   // tslint:disable:no-empty
-  public body(@RequestBody() body: any) {}
+  public body(@RequestBody(BodyDate) body: BodyDate) {}
+  public bodyWithOutType(@RequestBody() body: BodyDate) {}
   public requestPathParameter(
     @RequestPathParameter('id') requestParameter: any
   ) {}

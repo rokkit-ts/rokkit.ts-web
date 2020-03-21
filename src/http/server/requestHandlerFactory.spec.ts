@@ -146,14 +146,21 @@ describe('RequestHandlerFactory', () => {
 
   it('should call RequestHandler and inject body', () => {
     // given
-    const requestMock = { body: 'test' } as Request
+    const requestMock = { body: '{ "data" : "test" }' } as Request
     const responeMock = {} as Response
     const handlerMock = jest.fn()
     const instanceMock = { handler: handlerMock }
     const requestMapping: RequestMapping = {
       httpMethod: HttpMethod.GET,
       methodName: 'handler',
-      parameters: [{ index: 0, key: '', type: RequestParameterType.BODY }],
+      parameters: [
+        {
+          index: 0,
+          key: '',
+          type: RequestParameterType.BODY,
+          bodyType: BodyClass
+        }
+      ],
       resourcePath: ''
     }
 
@@ -167,7 +174,73 @@ describe('RequestHandlerFactory', () => {
 
     // then
     expect(handlerMock).toBeCalledTimes(1)
-    expect(handlerMock).toHaveBeenCalledWith('test')
+    expect(handlerMock).toHaveBeenCalledWith(new BodyClass('test'))
+  })
+
+  it('should call RequestHandler and inject body without Type', () => {
+    // given
+    const requestMock = { body: '{ "data" : "test" }' } as Request
+    const responeMock = {} as Response
+    const handlerMock = jest.fn()
+    const instanceMock = { handler: handlerMock }
+    const requestMapping: RequestMapping = {
+      httpMethod: HttpMethod.GET,
+      methodName: 'handler',
+      parameters: [
+        {
+          index: 0,
+          key: '',
+          type: RequestParameterType.BODY
+        }
+      ],
+      resourcePath: ''
+    }
+
+    // when
+    const requestHandler = RequestHandlerFactory.buildHandlerFunction(
+      instanceMock,
+      requestMapping
+    )
+    // tslint:disable-next-line: no-empty
+    requestHandler(requestMock, responeMock, () => {})
+
+    // then
+    expect(handlerMock).toBeCalledTimes(1)
+    expect(handlerMock).toHaveBeenCalledWith({ data: 'test' })
+  })
+
+  it('should send 500 when body is not Parsable to type', () => {
+    // given
+    const requestMock = { body: ' "data" : "test" ' } as Request
+    const sendMock = jest.fn()
+    const responeMock = { send: sendMock as any } as Response
+    const handlerMock = jest.fn()
+    const instanceMock = { handler: handlerMock }
+    const requestMapping: RequestMapping = {
+      httpMethod: HttpMethod.GET,
+      methodName: 'handler',
+      parameters: [
+        {
+          index: 0,
+          key: '',
+          type: RequestParameterType.BODY,
+          bodyType: BodyClass
+        }
+      ],
+      resourcePath: ''
+    }
+
+    // when
+    const requestHandler = RequestHandlerFactory.buildHandlerFunction(
+      instanceMock,
+      requestMapping
+    )
+    // tslint:disable-next-line: no-empty
+    requestHandler(requestMock, responeMock, () => {})
+
+    // then
+    expect(sendMock).toBeCalledTimes(1)
+    expect(sendMock).toHaveBeenCalledWith(500, expect.any(Error))
   })
 
   it('should call RequestHandler and inject request', () => {
@@ -338,3 +411,10 @@ describe('RequestHandlerFactory', () => {
     expect(handlerMock).toHaveBeenCalledWith('some body', 'rokkit.dev')
   })
 })
+
+class BodyClass {
+  private data: string
+  constructor(data: string) {
+    this.data = data
+  }
+}
