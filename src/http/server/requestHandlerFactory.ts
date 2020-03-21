@@ -28,6 +28,12 @@ export class RequestHandlerFactory {
         )
 
         if (result) {
+          if (
+            RequestHandlerFactory.instanceOfResponse(result) &&
+            result.finished
+          ) {
+            return
+          }
           res.send(200, result)
         } else {
           throw new Error(
@@ -104,5 +110,15 @@ export class RequestHandlerFactory {
         return body
       }
     }
+  }
+
+  private static instanceOfResponse(object: any): object is Response {
+    return (
+      typeof object === 'object' &&
+      'finished' in object &&
+      'send' in object &&
+      '_headerSent' in object &&
+      '_hasBody' in object
+    )
   }
 }
