@@ -8,6 +8,7 @@ export function Controller(resourcePath: string): Function {
     registerHttpController(
       createControllerInformation(constructor, resourcePath)
     )
+    return class extends constructor {}
   }
 }
 
