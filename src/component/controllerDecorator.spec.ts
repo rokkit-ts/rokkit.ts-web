@@ -11,7 +11,7 @@ import { Injectable } from '@rokkit.ts/dependency-injection'
 
 jest.mock('../starter')
 jest.mock('@rokkit.ts/dependency-injection', () => ({
-  Injectable: jest.fn().mockReturnValue(jest.fn)
+  RokkitDI: { registerInjectable: jest.fn() }
 }))
 
 describe('ControllerDecorator', () => {
@@ -33,14 +33,9 @@ describe('ControllerDecorator', () => {
     expect(registerHttpController).toHaveBeenCalledTimes(1)
     expect(registerHttpController).toHaveBeenCalledWith(expectedController)
   })
-
-  it('should register an inject in the dependency injector context', () => {
-    expect(Injectable).toBeCalledTimes(1)
-    expect(Injectable).toBeCalledWith(__filename, 'contextName')
-  })
 })
 
-@Controller('/hello', __filename, 'contextName')
+@Controller('/hello')
 class TestControllerClass {
   @Post('/world')
   // tslint:disable-next-line:no-empty

@@ -6,23 +6,18 @@ import {
   RestifyHttpServer,
   RokkitServerOptions
 } from '../http'
+import { RokkitDI } from '@rokkit.ts/dependency-injection'
 
 const HTTP_CONTROLLERS: ControllerInformation[] = []
 
 export const registerHttpController = (controller: ControllerInformation) =>
   HTTP_CONTROLLERS.push(controller)
 
-export class WebStarter extends AbstractModule {
+export class WebStarter extends AbstractModule<RokkitServerOptions> {
   private httpServer: HttpServer | undefined
 
-  constructor() {
-    super()
-  }
-
-  public async injectDependencies(
-    instanceMap: Map<string, any>
-  ): Promise<void> {
-    this.instanceMap = instanceMap
+  constructor(webModuleConfig: RokkitServerOptions) {
+    super(webModuleConfig)
   }
 
   public async runModule(
@@ -33,7 +28,7 @@ export class WebStarter extends AbstractModule {
     await this.httpServer.run()
   }
 
-  public async shoutDownModule(): Promise<void> {
+  public async shutdownModule(): Promise<void> {
     if (this.httpServer) {
       await this.httpServer.stop()
     }
@@ -42,7 +37,7 @@ export class WebStarter extends AbstractModule {
   private async mapControllerToInstances(): Promise<void> {
     await Promise.all(
       HTTP_CONTROLLERS.map(async controllerInformation => {
-        const controllerInstance: any = this.instanceMap.get(
+        const controllerInstance: any = RokkitDI.singletonOf(
           controllerInformation.controllerName
         )
         await Promise.all(

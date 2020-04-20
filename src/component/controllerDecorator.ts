@@ -1,14 +1,10 @@
-import { Injectable } from '@rokkit.ts/dependency-injection'
+import { Injectable, RokkitDI } from '@rokkit.ts/dependency-injection'
 import { registerHttpController } from '../starter'
 import { getRequestMappings } from './httpRequestDecorators'
 
-export function Controller(
-  resourcePath: string,
-  fileName?: string,
-  contextName?: string
-): Function {
+export function Controller(resourcePath: string): Function {
   return <T extends new (...args: any[]) => {}>(constructor: T) => {
-    Injectable(fileName, contextName)(constructor)
+    RokkitDI.registerInjectable(constructor)
     registerHttpController(
       createControllerInformation(constructor, resourcePath)
     )

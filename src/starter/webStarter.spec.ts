@@ -1,6 +1,8 @@
 import { ControllerInformation } from '../component'
 import { HttpMethod, RestifyHttpServer } from '../http'
 import { registerHttpController, WebStarter } from './webStarter'
+import { RokkitDI } from '@rokkit.ts/dependency-injection'
+import { mocked } from 'ts-jest/utils'
 
 jest.mock('../http', () => ({
   ...jest.requireActual('../http'),
@@ -15,19 +17,22 @@ describe('WebStarter', () => {
   beforeEach(() => {
     runMock.mockClear()
     stopMock.mockClear()
-    ;((RestifyHttpServer as unknown) as jest.Mock).mockClear()
-    ;((RestifyHttpServer as unknown) as jest.Mock).mockImplementation(() => ({
-      run: runMock,
-      stop: stopMock,
-      addRequestHandler: addRequestHandlerMock
-    }))
+    mocked(RestifyHttpServer).mockClear()
+    mocked(RestifyHttpServer).mockImplementation(
+      () =>
+        (({
+          run: runMock,
+          stop: stopMock,
+          addRequestHandler: addRequestHandlerMock
+        } as unknown) as RestifyHttpServer)
+    )
   })
 
   it('should create and start restifyServer when running the module', async () => {
     // given
     const restifyServerConfig = undefined
     // when
-    const webModule = new WebStarter()
+    const webModule = new WebStarter({})
     await webModule.runModule(restifyServerConfig)
     // then
     expect(RestifyHttpServer).toBeCalledTimes(1)
@@ -37,10 +42,9 @@ describe('WebStarter', () => {
 
   it('should add registered controller to the restiyServer', async () => {
     // given
-    const instance = jest.fn().mockImplementation(() => ({}))
     const controller: ControllerInformation = {
       basePath: '/test',
-      controllerName: 'some name',
+      controllerName: 'TestClass',
       resourceMappings: [
         {
           methodName: 'call',
@@ -50,12 +54,12 @@ describe('WebStarter', () => {
         }
       ]
     }
-    const instances = new Map<string, any>()
-    instances.set('some name', instance)
+
+    RokkitDI.registerInjectable(TestClass)
+
     // when
     registerHttpController(controller)
-    const webModule = new WebStarter()
-    await webModule.injectDependencies(instances)
+    const webModule = new WebStarter({})
     await webModule.runModule(undefined)
     // then
     expect(addRequestHandlerMock).toBeCalledTimes(1)
@@ -70,9 +74,9 @@ describe('WebStarter', () => {
     // given
     const restifyServerConfig = undefined
     // when
-    const webModule = new WebStarter()
+    const webModule = new WebStarter({})
     await webModule.runModule(restifyServerConfig)
-    await webModule.shoutDownModule()
+    await webModule.shutdownModule()
     // then
     expect(stopMock).toBeCalledTimes(1)
   })
@@ -81,9 +85,11 @@ describe('WebStarter', () => {
     // given
     const restifyServerConfig = undefined
     // when
-    const webModule = new WebStarter()
-    await webModule.shoutDownModule()
+    const webModule = new WebStarter({})
+    await webModule.shutdownModule()
     // then
     expect(stopMock).toBeCalledTimes(0)
   })
 })
+
+class TestClass {}
