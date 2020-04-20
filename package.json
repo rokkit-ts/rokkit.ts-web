@@ -1,6 +1,6 @@
 {
   "name": "@rokkit.ts/web",
-  "version": "0.2.7",
+  "version": "0.3.0",
   "description": "The web module to build an RESTFUL API with rokkit.ts",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
