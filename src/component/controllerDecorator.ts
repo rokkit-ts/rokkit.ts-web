@@ -1,4 +1,4 @@
-import { Injectable, RokkitDI } from '@rokkit.ts/dependency-injection'
+import { RokkitDI } from '@rokkit.ts/dependency-injection'
 import { registerHttpController } from '../starter'
 import { getRequestMappings } from './httpRequestDecorators'
 
