@@ -111,8 +111,22 @@ describe('BasicObjectMapper', () => {
       new ClassWithDateAsString('2020-99-01T01:00:00.000+01:00')
     )
   })
+
+  it('should pasre data to interface', () => {
+    // given
+    const stringData = `{ "aString": "test"}`
+    const expectedInterface = { aString: 'test' }
+    const objectMapper = new BasicObjectMapper()
+    // when
+    const actualInterface = objectMapper.parseTo<AnInterface>(stringData)
+    // then
+    expect(actualInterface).toEqual(expectedInterface)
+  })
 })
 
+interface AnInterface {
+  aString: string
+}
 class SimpleClass {
   constructor(
     public aString: string,

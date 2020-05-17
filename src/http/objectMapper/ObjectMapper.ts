@@ -21,5 +21,5 @@ export abstract class ObjectMapper {
       shouldParseDates: config?.shouldParseDates ?? true
     }
   }
-  public abstract parseTo<T>(data: string, type: new (...args: any[]) => T): T
+  public abstract parseTo<T>(data: string, type?: new (...args: any[]) => T): T
 }

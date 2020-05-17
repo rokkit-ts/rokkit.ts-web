@@ -1,7 +1,7 @@
 import { ObjectMapper } from './ObjectMapper'
 
 export class BasicObjectMapper extends ObjectMapper {
-  public parseTo<T>(data: string, type: new (...args: any[]) => T): T {
+  public parseTo<T>(data: string, type?: new (...args: any[]) => T): T {
     let jsonData: unknown
     try {
       jsonData = JSON.parse(data, (_: string, value: unknown) =>
@@ -11,7 +11,11 @@ export class BasicObjectMapper extends ObjectMapper {
       throw new Error(`Not able to parse data to JSON: ${error.message}`)
     }
 
-    return Object.assign(new type(), jsonData)
+    if (type) {
+      return Object.assign(new type(), jsonData)
+    } else {
+      return jsonData as T
+    }
   }
 
   private basicReviver(value: unknown) {

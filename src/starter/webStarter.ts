@@ -9,6 +9,8 @@ import {
 import { RokkitDI } from '@rokkit.ts/dependency-injection'
 import { Logger, LoggerFactory } from '@rokkit.ts/logger'
 import { Next, Request, Response } from 'restify'
+import { ObjectMapper } from '../http/objectMapper/ObjectMapper'
+import { BasicObjectMapper } from '../http/objectMapper/BasicObjectMapper'
 
 const HTTP_CONTROLLERS: ControllerInformation[] = []
 
@@ -17,11 +19,15 @@ export const registerHttpController = (controller: ControllerInformation) =>
 
 export class WebStarter extends AbstractModule<RokkitServerOptions> {
   private httpServer: HttpServer | undefined
+  private objectMapper: ObjectMapper
+  private requestHandlerFactory: RequestHandlerFactory
   private logger: Logger
 
   constructor(webModuleConfig: RokkitServerOptions) {
     super(webModuleConfig)
     this.logger = LoggerFactory.create('WebStarter', true)
+    this.objectMapper = new BasicObjectMapper()
+    this.requestHandlerFactory = new RequestHandlerFactory(this.objectMapper)
   }
 
   public async runModule(
@@ -51,7 +57,7 @@ export class WebStarter extends AbstractModule<RokkitServerOptions> {
         )
         await Promise.all(
           controllerInformation.resourceMappings.map(requestMapping => {
-            const handlerFunction = RequestHandlerFactory.buildHandlerFunction(
+            const handlerFunction = this.requestHandlerFactory.buildHandlerFunction(
               controllerInstance,
               requestMapping
             )

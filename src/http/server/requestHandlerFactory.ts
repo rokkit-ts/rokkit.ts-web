@@ -4,13 +4,20 @@ import {
   RequestParameter,
   RequestParameterType
 } from '../../component/utils'
+import { ObjectMapper } from '../objectMapper/ObjectMapper'
 
 export class RequestHandlerFactory {
-  public static buildHandlerFunction(
+  private readonly objectMapper: ObjectMapper
+
+  constructor(objectMapper: ObjectMapper) {
+    this.objectMapper = objectMapper
+  }
+
+  public buildHandlerFunction(
     controllerInstance: any,
     requestMapping: RequestMapping
   ): (req: Request, res: Response, next: Next) => any {
-    const sortedParameters: any[] = RequestHandlerFactory.sortParameters(
+    const sortedParameters: any[] = this.sortParameters(
       requestMapping.parameters
     )
     return (req, res, next) => {
@@ -21,17 +28,14 @@ export class RequestHandlerFactory {
           sortedParameters
         )
 
-        const result = RequestHandlerFactory.callInstanceMethod(
+        const result = this.callInstanceMethod(
           controllerInstance,
           requestMapping,
           requestHandlerArguments
         )
 
         if (result) {
-          if (
-            RequestHandlerFactory.instanceOfResponse(result) &&
-            result.finished
-          ) {
+          if (this.instanceOfResponse(result) && result.finished) {
             return
           }
           res.send(200, result)
@@ -47,7 +51,7 @@ export class RequestHandlerFactory {
     }
   }
 
-  private static callInstanceMethod(
+  private callInstanceMethod(
     controllerInstance: any,
     requestMapping: RequestMapping,
     requestHandlerArguments: any[]
@@ -57,9 +61,7 @@ export class RequestHandlerFactory {
     )
   }
 
-  private static sortParameters(
-    parameter: RequestParameter[]
-  ): RequestParameter[] {
+  private sortParameters(parameter: RequestParameter[]): RequestParameter[] {
     return parameter.sort((a, b) => {
       if (a.index > b.index) return 1
       if (a.index < b.index) return -1
@@ -67,7 +69,7 @@ export class RequestHandlerFactory {
     })
   }
 
-  private static buildHttpHandlerParameters(
+  private buildHttpHandlerParameters(
     req: Request,
     res: Response,
     parameters: RequestParameter[]
@@ -75,7 +77,7 @@ export class RequestHandlerFactory {
     return parameters.map(parameter => {
       switch (parameter.type) {
         case RequestParameterType.BODY:
-          return RequestHandlerFactory.parseBody(req.body, parameter.bodyType)
+          return this.parseBody(req.body, parameter.bodyType)
         case RequestParameterType.REQUEST:
           return req
         case RequestParameterType.RESPONSE:
@@ -90,29 +92,13 @@ export class RequestHandlerFactory {
     })
   }
 
-  private static parseBody(
-    body: string,
-    bodyType?: new (...args: any[]) => {}
-  ): any {
-    if (bodyType) {
-      try {
-        return Object.assign(
-          new bodyType(),
-          typeof body === 'string' ? JSON.parse(body) : body
-        )
-      } catch (parsingError) {
-        throw new Error(`Cannot parse RequestBody --> ${parsingError.message}`)
-      }
-    } else {
-      try {
-        return JSON.parse(body)
-      } catch (parsingError) {
-        return body
-      }
-    }
+  private parseBody<T>(body: string, bodyType?: new (...args: any[]) => T): T {
+    return typeof body === 'string'
+      ? this.objectMapper.parseTo(body, bodyType)
+      : body
   }
 
-  private static instanceOfResponse(object: any): object is Response {
+  private instanceOfResponse(object: any): object is Response {
     return (
       typeof object === 'object' &&
       'finished' in object &&

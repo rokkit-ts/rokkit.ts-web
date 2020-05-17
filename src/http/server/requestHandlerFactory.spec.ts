@@ -2,6 +2,7 @@ import { Request, Response } from 'restify'
 import { RequestMapping, RequestParameterType } from '../../component'
 import { RequestHandlerFactory } from './requestHandlerFactory'
 import { HttpMethod } from '../httpMethod'
+import { BasicObjectMapper } from '../objectMapper/BasicObjectMapper'
 
 describe('RequestHandlerFactory', () => {
   it('should call RequestHandler', () => {
@@ -18,7 +19,10 @@ describe('RequestHandlerFactory', () => {
     }
 
     // when
-    const requestHandler = RequestHandlerFactory.buildHandlerFunction(
+    const requestHandlerFactory = new RequestHandlerFactory(
+      new BasicObjectMapper()
+    )
+    const requestHandler = requestHandlerFactory.buildHandlerFunction(
       instanceMock,
       requestMapping
     )
@@ -45,7 +49,10 @@ describe('RequestHandlerFactory', () => {
     }
 
     // when
-    const requestHandler = RequestHandlerFactory.buildHandlerFunction(
+    const requestHandlerFactory = new RequestHandlerFactory(
+      new BasicObjectMapper()
+    )
+    const requestHandler = requestHandlerFactory.buildHandlerFunction(
       instanceMock,
       requestMapping
     )
@@ -73,7 +80,10 @@ describe('RequestHandlerFactory', () => {
     }
 
     // when
-    const requestHandler = RequestHandlerFactory.buildHandlerFunction(
+    const requestHandlerFactory = new RequestHandlerFactory(
+      new BasicObjectMapper()
+    )
+    const requestHandler = requestHandlerFactory.buildHandlerFunction(
       instanceMock,
       requestMapping
     )
@@ -106,7 +116,10 @@ describe('RequestHandlerFactory', () => {
     }
 
     // when
-    const requestHandler = RequestHandlerFactory.buildHandlerFunction(
+    const requestHandlerFactory = new RequestHandlerFactory(
+      new BasicObjectMapper()
+    )
+    const requestHandler = requestHandlerFactory.buildHandlerFunction(
       instanceMock,
       requestMapping
     )
@@ -135,7 +148,10 @@ describe('RequestHandlerFactory', () => {
     const nextMock = jest.fn()
 
     // when
-    const requestHandler = RequestHandlerFactory.buildHandlerFunction(
+    const requestHandlerFactory = new RequestHandlerFactory(
+      new BasicObjectMapper()
+    )
+    const requestHandler = requestHandlerFactory.buildHandlerFunction(
       instanceMock,
       requestMapping
     )
@@ -170,7 +186,10 @@ describe('RequestHandlerFactory', () => {
     }
 
     // when
-    const requestHandler = RequestHandlerFactory.buildHandlerFunction(
+    const requestHandlerFactory = new RequestHandlerFactory(
+      new BasicObjectMapper()
+    )
+    const requestHandler = requestHandlerFactory.buildHandlerFunction(
       instanceMock,
       requestMapping
     )
@@ -207,7 +226,10 @@ describe('RequestHandlerFactory', () => {
     }
 
     // when
-    const requestHandler = RequestHandlerFactory.buildHandlerFunction(
+    const requestHandlerFactory = new RequestHandlerFactory(
+      new BasicObjectMapper()
+    )
+    const requestHandler = requestHandlerFactory.buildHandlerFunction(
       instanceMock,
       requestMapping
     )
@@ -241,7 +263,10 @@ describe('RequestHandlerFactory', () => {
     }
 
     // when
-    const requestHandler = RequestHandlerFactory.buildHandlerFunction(
+    const requestHandlerFactory = new RequestHandlerFactory(
+      new BasicObjectMapper()
+    )
+    const requestHandler = requestHandlerFactory.buildHandlerFunction(
       instanceMock,
       requestMapping
     )
@@ -275,7 +300,10 @@ describe('RequestHandlerFactory', () => {
     }
 
     // when
-    const requestHandler = RequestHandlerFactory.buildHandlerFunction(
+    const requestHandlerFactory = new RequestHandlerFactory(
+      new BasicObjectMapper()
+    )
+    const requestHandler = requestHandlerFactory.buildHandlerFunction(
       instanceMock,
       requestMapping
     )
@@ -286,7 +314,7 @@ describe('RequestHandlerFactory', () => {
     expect(sendMock).toBeCalledTimes(1)
     expect(sendMock).toHaveBeenCalledWith(
       500,
-      'Cannot parse RequestBody --> Unexpected token : in JSON at position 8'
+      'Not able to parse data to JSON: Unexpected token : in JSON at position 8'
     )
   })
 
@@ -304,7 +332,10 @@ describe('RequestHandlerFactory', () => {
     }
 
     // when
-    const requestHandler = RequestHandlerFactory.buildHandlerFunction(
+    const requestHandlerFactory = new RequestHandlerFactory(
+      new BasicObjectMapper()
+    )
+    const requestHandler = requestHandlerFactory.buildHandlerFunction(
       instanceMock,
       requestMapping
     )
@@ -330,7 +361,10 @@ describe('RequestHandlerFactory', () => {
     }
 
     // when
-    const requestHandler = RequestHandlerFactory.buildHandlerFunction(
+    const requestHandlerFactory = new RequestHandlerFactory(
+      new BasicObjectMapper()
+    )
+    const requestHandler = requestHandlerFactory.buildHandlerFunction(
       instanceMock,
       requestMapping
     )
@@ -361,7 +395,10 @@ describe('RequestHandlerFactory', () => {
     }
 
     // when
-    const requestHandler = RequestHandlerFactory.buildHandlerFunction(
+    const requestHandlerFactory = new RequestHandlerFactory(
+      new BasicObjectMapper()
+    )
+    const requestHandler = requestHandlerFactory.buildHandlerFunction(
       instanceMock,
       requestMapping
     )
@@ -393,7 +430,10 @@ describe('RequestHandlerFactory', () => {
     }
 
     // when
-    const requestHandler = RequestHandlerFactory.buildHandlerFunction(
+    const requestHandlerFactory = new RequestHandlerFactory(
+      new BasicObjectMapper()
+    )
+    const requestHandler = requestHandlerFactory.buildHandlerFunction(
       instanceMock,
       requestMapping
     )
@@ -425,7 +465,10 @@ describe('RequestHandlerFactory', () => {
     }
 
     // when
-    const requestHandler = RequestHandlerFactory.buildHandlerFunction(
+    const requestHandlerFactory = new RequestHandlerFactory(
+      new BasicObjectMapper()
+    )
+    const requestHandler = requestHandlerFactory.buildHandlerFunction(
       instanceMock,
       requestMapping
     )
@@ -440,7 +483,7 @@ describe('RequestHandlerFactory', () => {
   it('should call RequestHandler and inject a multiple objects', () => {
     // given
     const requestMock = {
-      body: 'some body',
+      body: '{"test":"some body"}',
       headers: { forwarded: 'rokkit.dev' }
     } as Request
     const responeMock = { send: jest.fn() as any } as Response
@@ -457,7 +500,10 @@ describe('RequestHandlerFactory', () => {
     }
 
     // when
-    const requestHandler = RequestHandlerFactory.buildHandlerFunction(
+    const requestHandlerFactory = new RequestHandlerFactory(
+      new BasicObjectMapper()
+    )
+    const requestHandler = requestHandlerFactory.buildHandlerFunction(
       instanceMock,
       requestMapping
     )
@@ -466,7 +512,10 @@ describe('RequestHandlerFactory', () => {
 
     // then
     expect(handlerMock).toBeCalledTimes(1)
-    expect(handlerMock).toHaveBeenCalledWith('some body', 'rokkit.dev')
+    expect(handlerMock).toHaveBeenCalledWith(
+      { test: 'some body' },
+      'rokkit.dev'
+    )
   })
 })
 
