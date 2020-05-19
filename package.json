@@ -8,7 +8,9 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "build": "tsc --build tsconfig.json",
-    "lint": "eslint --config .eslintrc.js 'src/**/*.ts' --max-warnings 0"
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint --config .eslintrc.js 'src/**/*.ts' --max-warnings 0",
+    "precommit": "npm run-script typecheck && npm run-script lint && pretty-quick --staged && npm test"
   },
   "keywords": [
     "rokkit.ts",
@@ -51,7 +53,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "pretty-quick --staged"
+      "pre-commit": "npm run-script precommit"
     }
   },
   "publishConfig": {
