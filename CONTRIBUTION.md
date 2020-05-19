@@ -1,6 +1,6 @@
 # Contributing to Rokkit.ts
 
-:confetti_ball: Thanks to contribute to Rokkit.ts. :confetti_ball:
+:confetti_ball: Thanks to contribute to Rokkit.ts. :confetti_ball:  
 Contributers like YOU are the reason why the open source community is so great and why we can build awesome software projects like Rokkit.ts. :tada:
 
 **Table of Content**
@@ -22,15 +22,15 @@ Contributers like YOU are the reason why the open source community is so great a
 
 ## Code of Conduct
 
-This project and everyone participating in it is governed by our [Code of Conduct](./CODE_OF_CONDUCT.md). By participating, you are expected to uphold this code. Please report unacceptable behavior to [saint740@googlemail.com](mailto:saint740@googlemail.com).
+This project and everyone participating in it is governed by our [Code of Conduct](./CODE_OF_CONDUCT.md).  
+By participating, you are expected to uphold this code. Please report unacceptable behavior to [saint740@googlemail.com](mailto:saint740@googlemail.com).
 
 ## How Can I contribute?
 
-There are different types of contributions that you can tackle.
+There are different types of contributions that you can tackle.  
 In the following we state different options how to contribute to the project.
 
-Before submitting any contribution please check which part of the framework (repository) is related.
-
+Before submitting any contribution please check which part of the framework (repository) is related.  
 Currently the project is split up into two different categories which contain the different parts:
 
 1. Feature Modules
