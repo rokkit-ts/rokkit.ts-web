@@ -1,9 +1,11 @@
+/* eslint-disable max-classes-per-file */
 import { BasicObjectMapper } from './BasicObjectMapper'
 
 describe('BasicObjectMapper', () => {
   it('should parse string to a simple class', () => {
     // given
-    const stringData = `{ "aString": "aSimpleString", "aNumber": 1.12345, "aBoolean": false, "anArrayOfStrings": [ "an", "array"] }`
+    const stringData =
+      '{ "aString": "aSimpleString", "aNumber": 1.12345, "aBoolean": false, "anArrayOfStrings": [ "an", "array"] }'
     const expectedClass = new SimpleClass('aSimpleString', 1.12345, false, [
       'an',
       'array'
@@ -19,7 +21,8 @@ describe('BasicObjectMapper', () => {
 
   it('should parse string to class with nested classes', () => {
     // given
-    const stringData = `{ "simpleClass" : { "aString": "aSimpleString", "aNumber": 1.12345, "aBoolean": false, "anArrayOfStrings": [ "an", "array"] }, "anInterface": { "aString": "aSimpleString"}}`
+    const stringData =
+      '{ "simpleClass" : { "aString": "aSimpleString", "aNumber": 1.12345, "aBoolean": false, "anArrayOfStrings": [ "an", "array"] }, "anInterface": { "aString": "aSimpleString"}}'
     const expectedClass = new ComplexClass(
       new SimpleClass('aSimpleString', 1.12345, false, ['an', 'array']),
       { aString: 'aSimpleString' }
@@ -35,7 +38,7 @@ describe('BasicObjectMapper', () => {
 
   it('should parse string that contains iso 8601 conforming date (2020-02-01T00:00:00.000Z) to class with date', () => {
     // given
-    const stringData = `{ "date": "2020-02-01T00:00:00.000Z" }`
+    const stringData = '{ "date": "2020-02-01T00:00:00.000Z" }'
     const expectedClass = new ClassWithDate(
       new Date('2020-02-01T00:00:00.000Z')
     )
@@ -50,7 +53,7 @@ describe('BasicObjectMapper', () => {
 
   it('should parse string that contains iso 8601 conforming date (2020-02-01T01:00:00+01:00) to class with date', () => {
     // given
-    const stringData = `{ "date": "2020-02-01T01:00:00.000+01:00" }`
+    const stringData = '{ "date": "2020-02-01T01:00:00.000+01:00" }'
     const expectedClass = new ClassWithDate(new Date('2020-02-01'))
 
     // when
@@ -63,7 +66,7 @@ describe('BasicObjectMapper', () => {
 
   it('should parse string that contains date conforming the given format', () => {
     // given
-    const stringData = `{ "date": "2020-02-01" }`
+    const stringData = '{ "date": "2020-02-01" }'
     const expectedClass = new ClassWithDate(new Date('2020-02-01'))
 
     // when
@@ -78,7 +81,7 @@ describe('BasicObjectMapper', () => {
 
   it('should parse throw exception if a given date is not assignable to date class', () => {
     // given
-    const stringData = `{ "date": "2020-99-01T01:00:00.000+01:00" }`
+    const stringData = '{ "date": "2020-99-01T01:00:00.000+01:00" }'
     const objectMapper = new BasicObjectMapper()
 
     // when / then
@@ -89,7 +92,7 @@ describe('BasicObjectMapper', () => {
 
   it('should throw exception if the json string is not parseable', () => {
     // given
-    const stringData = `{ "date": -as"2020-99-01T01:00:00.000+01:00" }`
+    const stringData = '{ "date": -as"2020-99-01T01:00:00.000+01:00" }'
     const objectMapper = new BasicObjectMapper()
     // when /then
     expect(() => objectMapper.parseTo(stringData, ClassWithDate)).toThrowError(
@@ -99,7 +102,7 @@ describe('BasicObjectMapper', () => {
 
   it('should parse date as string when configured to nopt parse dates', () => {
     // given
-    const stringData = `{ "date": "2020-99-01T01:00:00.000+01:00" }`
+    const stringData = '{ "date": "2020-99-01T01:00:00.000+01:00" }'
     const shouldParseDates = false
     // when
     const objectMapper = new BasicObjectMapper({
@@ -114,7 +117,7 @@ describe('BasicObjectMapper', () => {
 
   it('should pasre data to interface', () => {
     // given
-    const stringData = `{ "aString": "test"}`
+    const stringData = '{ "aString": "test"}'
     const expectedInterface = { aString: 'test' }
     const objectMapper = new BasicObjectMapper()
     // when
@@ -128,7 +131,7 @@ interface AnInterface {
   aString: string
 }
 class SimpleClass {
-  constructor(
+  public constructor(
     public aString: string,
     public aNumber: number,
     public aBoolean: boolean,
@@ -136,19 +139,17 @@ class SimpleClass {
   ) {}
 }
 
-// tslint:disable-next-line: max-classes-per-file
 class ComplexClass {
-  constructor(
+  public constructor(
     public simpleClass: SimpleClass,
     public anInterface: { aString: string }
   ) {}
 }
 
-// tslint:disable-next-line: max-classes-per-file
 class ClassWithDate {
-  constructor(public date: Date) {}
+  public constructor(public date: Date) {}
 }
-// tslint:disable-next-line: max-classes-per-file
+
 class ClassWithDateAsString {
-  constructor(public date: string) {}
+  public constructor(public date: string) {}
 }

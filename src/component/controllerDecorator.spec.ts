@@ -1,5 +1,5 @@
-// tslint:disable:max-classes-per-file
-// tslint:disable:no-unused-expression
+// eslint-disable max-classes-per-file
+// eslint-disable @typescript-eslint/no-unused-expressions
 
 import { HttpMethod } from '../http'
 import { Controller } from './controllerDecorator'
@@ -7,7 +7,6 @@ import { Post } from './httpRequestDecorators'
 import { RequestBody } from './httpRequestParameterDecorators'
 import { ControllerInformation, RequestParameterType } from './utils'
 import { registerHttpController } from '../starter'
-import { Injectable } from '@rokkit.ts/dependency-injection'
 
 jest.mock('../starter')
 jest.mock('@rokkit.ts/dependency-injection', () => ({
@@ -36,8 +35,9 @@ describe('ControllerDecorator', () => {
 })
 
 @Controller('/hello')
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 class TestControllerClass {
   @Post('/world')
-  // tslint:disable-next-line:no-empty
-  public postMethod(@RequestBody() body: any) {}
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-function
+  public postMethod(@RequestBody() body: unknown): void {}
 }

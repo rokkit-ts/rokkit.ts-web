@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-empty-function */
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
 // tslint:disable:no-empty
 
 import { HttpMethod } from '../http'
@@ -15,7 +17,10 @@ import { RequestBody } from './httpRequestParameterDecorators'
 import { RequestMapping } from './utils/request/requestMapping'
 import { RequestParameterType } from './utils/request/requestParameterType'
 
-const compareRequestMappings = (a: RequestMapping, b: RequestMapping) => {
+const compareRequestMappings = (
+  a: RequestMapping,
+  b: RequestMapping
+): boolean => {
   try {
     expect(a).toEqual(b)
     return true
@@ -190,6 +195,7 @@ class TestClass {
   @Get('/get')
   public get() {}
   @Get('/body')
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public body(@RequestBody() body: any) {}
   @Post('/post')
   public post() {}

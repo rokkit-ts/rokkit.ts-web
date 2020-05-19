@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-empty-function */
+/* eslint-disable max-classes-per-file */
 import { Request, Response } from 'restify'
 import { RequestMapping, RequestParameterType } from '../../component'
 import { RequestHandlerFactory } from './requestHandlerFactory'
@@ -26,7 +28,7 @@ describe('RequestHandlerFactory', () => {
       instanceMock,
       requestMapping
     )
-    // tslint:disable-next-line: no-empty
+
     requestHandler(requestMock, responeMock, () => {})
 
     // then
@@ -56,7 +58,7 @@ describe('RequestHandlerFactory', () => {
       instanceMock,
       requestMapping
     )
-    // tslint:disable-next-line: no-empty
+
     requestHandler(requestMock, responeMock, () => {})
 
     // then
@@ -87,7 +89,7 @@ describe('RequestHandlerFactory', () => {
       instanceMock,
       requestMapping
     )
-    // tslint:disable-next-line: no-empty
+
     requestHandler(requestMock, responeMock, () => {})
 
     // then
@@ -123,7 +125,7 @@ describe('RequestHandlerFactory', () => {
       instanceMock,
       requestMapping
     )
-    // tslint:disable-next-line: no-empty
+
     requestHandler(requestMock, responeMock, () => {})
 
     // then
@@ -155,7 +157,7 @@ describe('RequestHandlerFactory', () => {
       instanceMock,
       requestMapping
     )
-    // tslint:disable-next-line: no-empty
+
     requestHandler(requestMock, responeMock, nextMock)
 
     // then
@@ -193,7 +195,7 @@ describe('RequestHandlerFactory', () => {
       instanceMock,
       requestMapping
     )
-    // tslint:disable-next-line: no-empty
+
     requestHandler(requestMock, responeMock, () => {})
 
     // then
@@ -233,7 +235,7 @@ describe('RequestHandlerFactory', () => {
       instanceMock,
       requestMapping
     )
-    // tslint:disable-next-line: no-empty
+
     requestHandler(requestMock, responeMock, () => {})
 
     // then
@@ -270,7 +272,7 @@ describe('RequestHandlerFactory', () => {
       instanceMock,
       requestMapping
     )
-    // tslint:disable-next-line: no-empty
+
     requestHandler(requestMock, responeMock, () => {})
 
     // then
@@ -307,7 +309,7 @@ describe('RequestHandlerFactory', () => {
       instanceMock,
       requestMapping
     )
-    // tslint:disable-next-line: no-empty
+
     requestHandler(requestMock, responeMock, () => {})
 
     // then
@@ -339,7 +341,7 @@ describe('RequestHandlerFactory', () => {
       instanceMock,
       requestMapping
     )
-    // tslint:disable-next-line: no-empty
+
     requestHandler(requestMock, responeMock, () => {})
 
     // then
@@ -368,7 +370,7 @@ describe('RequestHandlerFactory', () => {
       instanceMock,
       requestMapping
     )
-    // tslint:disable-next-line: no-empty
+
     requestHandler(requestMock, responeMock, () => {})
 
     // then
@@ -402,7 +404,7 @@ describe('RequestHandlerFactory', () => {
       instanceMock,
       requestMapping
     )
-    // tslint:disable-next-line: no-empty
+
     requestHandler(requestMock, responeMock, () => {})
 
     // then
@@ -437,7 +439,7 @@ describe('RequestHandlerFactory', () => {
       instanceMock,
       requestMapping
     )
-    // tslint:disable-next-line: no-empty
+
     requestHandler(requestMock, responeMock, () => {})
 
     // then
@@ -472,7 +474,6 @@ describe('RequestHandlerFactory', () => {
       instanceMock,
       requestMapping
     )
-    // tslint:disable-next-line: no-empty
     requestHandler(requestMock, responeMock, () => {})
 
     // then
@@ -507,7 +508,7 @@ describe('RequestHandlerFactory', () => {
       instanceMock,
       requestMapping
     )
-    // tslint:disable-next-line: no-empty
+
     requestHandler(requestMock, responeMock, () => {})
 
     // then
@@ -521,7 +522,7 @@ describe('RequestHandlerFactory', () => {
 
 class SubClass {
   private data: number
-  constructor(data: number) {
+  public constructor(data: number) {
     this.data = data
   }
 }
@@ -529,7 +530,7 @@ class SubClass {
 class BodyClass {
   private data: string
   private subClass: SubClass
-  constructor(data: string, subClass: SubClass) {
+  public constructor(data: string, subClass: SubClass) {
     this.data = data
     this.subClass = subClass
   }

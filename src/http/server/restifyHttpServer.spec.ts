@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { HttpMethod } from '../httpMethod'
 import { RestifyHttpServer } from './restifyHttpServer'
 import { createServer } from 'restify'

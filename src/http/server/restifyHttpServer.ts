@@ -28,7 +28,9 @@ export class RestifyHttpServer implements HttpServer {
   private readonly port: number
   private readonly logger: Logger
 
-  constructor(severConfiguration: RokkitServerOptions = DEFAULT_CONFIGURATION) {
+  public constructor(
+    severConfiguration: RokkitServerOptions = DEFAULT_CONFIGURATION
+  ) {
     this.restifyInstance = this.create(severConfiguration)
     this.port = severConfiguration.port ?? DEFAULT_PORT
     this.logger = severConfiguration.log ?? DEFAULT_LOGGER

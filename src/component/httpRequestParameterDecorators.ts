@@ -11,7 +11,7 @@ export function getRequestParameterByFunctionName(
 }
 
 export function RequestPathParameter(requestParam: string) {
-  return (target: object, propertyKey: string, parameterIndex: number) =>
+  return (target: object, propertyKey: string, parameterIndex: number): void =>
     buildMetadataRequestParameter(
       requestParam,
       RequestParameterType.REQUEST_PATH_PARAMETER,
@@ -22,7 +22,7 @@ export function RequestPathParameter(requestParam: string) {
 }
 
 export function RequestQueryParameter(queryParam: string) {
-  return (target: object, propertyKey: string, parameterIndex: number) =>
+  return (target: object, propertyKey: string, parameterIndex: number): void =>
     buildMetadataRequestParameter(
       queryParam,
       RequestParameterType.REQUEST_QUERY_PARAMETER,
@@ -33,7 +33,7 @@ export function RequestQueryParameter(queryParam: string) {
 }
 
 export function RequestHeader(header: string) {
-  return (target: object, propertyKey: string, parameterIndex: number) =>
+  return (target: object, propertyKey: string, parameterIndex: number): void =>
     buildMetadataRequestParameter(
       header,
       RequestParameterType.HEADER,
@@ -46,7 +46,7 @@ export function RequestHeader(header: string) {
 export function RequestBody<T extends new (...args: any[]) => {}>(
   bodyType?: T
 ) {
-  return (target: object, propertyKey: string, parameterIndex: number) =>
+  return (target: object, propertyKey: string, parameterIndex: number): void =>
     buildMetadataRequestParameter(
       '',
       RequestParameterType.BODY,
@@ -58,7 +58,7 @@ export function RequestBody<T extends new (...args: any[]) => {}>(
 }
 
 export function Request() {
-  return (target: object, propertyKey: string, parameterIndex: number) =>
+  return (target: object, propertyKey: string, parameterIndex: number): void =>
     buildMetadataRequestParameter(
       '',
       RequestParameterType.REQUEST,
@@ -69,7 +69,7 @@ export function Request() {
 }
 
 export function Response() {
-  return (target: object, propertyKey: string, parameterIndex: number) =>
+  return (target: object, propertyKey: string, parameterIndex: number): void =>
     buildMetadataRequestParameter(
       '',
       RequestParameterType.RESPONSE,

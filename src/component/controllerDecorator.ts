@@ -1,9 +1,10 @@
 import { RokkitDI } from '@rokkit.ts/dependency-injection'
 import { registerHttpController } from '../starter'
 import { getRequestMappings } from './httpRequestDecorators'
+import { ControllerInformation } from './utils'
 
 export function Controller(resourcePath: string): Function {
-  return <T extends new (...args: any[]) => {}>(constructor: T) => {
+  return <T extends new (...args: any[]) => {}>(constructor: T): T => {
     RokkitDI.registerInjectable(constructor)
     registerHttpController(
       createControllerInformation(constructor, resourcePath)
@@ -15,7 +16,7 @@ export function Controller(resourcePath: string): Function {
 function createControllerInformation<T extends new (...args: any[]) => {}>(
   constructor: T,
   resourcePath: string
-) {
+): ControllerInformation {
   return {
     basePath: resourcePath,
     controllerName: constructor.name,

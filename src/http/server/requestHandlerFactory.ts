@@ -9,7 +9,7 @@ import { ObjectMapper } from '../objectMapper/ObjectMapper'
 export class RequestHandlerFactory {
   private readonly objectMapper: ObjectMapper
 
-  constructor(objectMapper: ObjectMapper) {
+  public constructor(objectMapper: ObjectMapper) {
     this.objectMapper = objectMapper
   }
 
@@ -20,7 +20,7 @@ export class RequestHandlerFactory {
     const sortedParameters: any[] = this.sortParameters(
       requestMapping.parameters
     )
-    return (req, res, next) => {
+    return (req, res, next): unknown => {
       try {
         const requestHandlerArguments = this.buildHttpHandlerParameters(
           req,
@@ -55,7 +55,7 @@ export class RequestHandlerFactory {
     controllerInstance: any,
     requestMapping: RequestMapping,
     requestHandlerArguments: any[]
-  ) {
+  ): unknown {
     return controllerInstance[requestMapping.methodName](
       ...requestHandlerArguments
     )

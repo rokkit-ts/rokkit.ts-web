@@ -14,8 +14,11 @@ import { BasicObjectMapper } from '../http/objectMapper/BasicObjectMapper'
 
 const HTTP_CONTROLLERS: ControllerInformation[] = []
 
-export const registerHttpController = (controller: ControllerInformation) =>
+export const registerHttpController = (
+  controller: ControllerInformation
+): void => {
   HTTP_CONTROLLERS.push(controller)
+}
 
 export class WebStarter extends AbstractModule<RokkitServerOptions> {
   private httpServer: HttpServer | undefined
@@ -23,7 +26,7 @@ export class WebStarter extends AbstractModule<RokkitServerOptions> {
   private requestHandlerFactory: RequestHandlerFactory
   private logger: Logger
 
-  constructor(webModuleConfig: RokkitServerOptions) {
+  public constructor(webModuleConfig: RokkitServerOptions) {
     super(webModuleConfig)
     this.logger = LoggerFactory.create('WebStarter', true)
     this.objectMapper = new BasicObjectMapper()
@@ -33,14 +36,14 @@ export class WebStarter extends AbstractModule<RokkitServerOptions> {
   public async runModule(
     restifyServerConfiguration?: RokkitServerOptions
   ): Promise<void> {
-    this.logger.info(`Starting the web module`)
+    this.logger.info('Starting the web module')
     this.httpServer = new RestifyHttpServer(restifyServerConfiguration)
     await this.mapControllerToInstances()
     await this.httpServer.run()
   }
 
   public async shutdownModule(): Promise<void> {
-    this.logger.info(`Shuting down the web module`)
+    this.logger.info('Shuting down the web module')
     if (this.httpServer) {
       await this.httpServer.stop()
     }
@@ -80,7 +83,7 @@ export class WebStarter extends AbstractModule<RokkitServerOptions> {
     handlerFunction: (req: Request, res: Response, next: Next) => any,
     requestMapping: RequestMapping,
     controllerInformation: ControllerInformation
-  ) {
+  ): void {
     if (this.httpServer) {
       this.httpServer.addRequestHandler(
         requestMapping.httpMethod,

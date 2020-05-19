@@ -83,6 +83,7 @@ describe('WebStarter', () => {
 
   it('should not call stop when the module was not started', async () => {
     // given
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const restifyServerConfig = undefined
     // when
     const webModule = new WebStarter({})

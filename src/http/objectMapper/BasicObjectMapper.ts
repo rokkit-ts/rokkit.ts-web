@@ -18,7 +18,7 @@ export class BasicObjectMapper extends ObjectMapper {
     }
   }
 
-  private basicReviver(value: unknown) {
+  private basicReviver(value: unknown): unknown {
     if (this.config.shouldParseDates) {
       if (typeof value === 'string' && this.config.dateFormat.test(value)) {
         const newDate = new Date(value)

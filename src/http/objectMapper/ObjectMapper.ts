@@ -15,7 +15,7 @@ export abstract class ObjectMapper {
   private static readonly iso8601 = /^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d(\.\d+)?(([+-]\d\d:\d\d)|Z)?$/i
   protected config: Required<ObjectMapperConfig>
 
-  constructor(config?: ObjectMapperConfig) {
+  public constructor(config?: ObjectMapperConfig) {
     this.config = {
       dateFormat: config?.dateFormat ?? ObjectMapper.iso8601,
       shouldParseDates: config?.shouldParseDates ?? true

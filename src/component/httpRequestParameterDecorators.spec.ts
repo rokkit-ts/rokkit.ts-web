@@ -1,4 +1,6 @@
-// tslint:disable:max-classes-per-file
+/* eslint-disable @typescript-eslint/no-empty-function */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable max-classes-per-file */
 import {
   getRequestParameterByFunctionName,
   RequestQueryParameter,
@@ -152,20 +154,20 @@ describe('HttpRequestParameterDecorators', () => {
 
 class BodyDate {
   private data = 'test'
-  get Data() {
+  public get Data(): string {
     return this.data
   }
 }
 
 class TestClass {
   // tslint:disable:no-empty
-  public body(@RequestBody(BodyDate) body: BodyDate) {}
-  public bodyWithOutType(@RequestBody() body: BodyDate) {}
+  public body(@RequestBody(BodyDate) body: BodyDate): void {}
+  public bodyWithOutType(@RequestBody() body: BodyDate): void {}
   public requestPathParameter(
     @RequestPathParameter('id') requestParameter: any
-  ) {}
-  public queryParameter(@RequestQueryParameter('name') query: any) {}
-  public requestHeader(@RequestHeader('forwarded') header: string) {}
-  public request(@Request() request: any) {}
-  public response(@Response() response: any) {}
+  ): void {}
+  public queryParameter(@RequestQueryParameter('name') query: any): void {}
+  public requestHeader(@RequestHeader('forwarded') header: string): void {}
+  public request(@Request() request: any): void {}
+  public response(@Response() response: any): void {}
 }

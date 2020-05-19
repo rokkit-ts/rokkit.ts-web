@@ -3,31 +3,31 @@ import { HttpMethod } from '../http/'
 import { getRequestParameterByFunctionName } from './httpRequestParameterDecorators'
 import { METADATA_KEY_RESOURCE_MAPPINGS, RequestMapping } from './utils'
 
-export function Get(resourcePath: string) {
+export function Get(resourcePath: string): Function {
   return buildHTTPFunctionDecorator(HttpMethod.GET, resourcePath)
 }
 
-export function Post(resourcePath: string) {
+export function Post(resourcePath: string): Function {
   return buildHTTPFunctionDecorator(HttpMethod.POST, resourcePath)
 }
 
-export function Put(resourcePath: string) {
+export function Put(resourcePath: string): Function {
   return buildHTTPFunctionDecorator(HttpMethod.PUT, resourcePath)
 }
 
-export function Patch(resourcePath: string) {
+export function Patch(resourcePath: string): Function {
   return buildHTTPFunctionDecorator(HttpMethod.PATCH, resourcePath)
 }
 
-export function Delete(resourcePath: string) {
+export function Delete(resourcePath: string): Function {
   return buildHTTPFunctionDecorator(HttpMethod.DELETE, resourcePath)
 }
 
-export function Head(resourcePath: string) {
+export function Head(resourcePath: string): Function {
   return buildHTTPFunctionDecorator(HttpMethod.HEAD, resourcePath)
 }
 
-export function Options(resourcePath: string) {
+export function Options(resourcePath: string): Function {
   return buildHTTPFunctionDecorator(HttpMethod.OPTIONS, resourcePath)
 }
 
@@ -41,11 +41,8 @@ function buildHTTPFunctionDecorator(
   httpMethod: HttpMethod,
   resourcePath: string
 ): Function {
-  return (
-    target: object,
-    propertyKey: string,
-    descriptor: PropertyDescriptor
-  ) => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  return (target: object, propertyKey: string, _: PropertyDescriptor): void => {
     const resourceMapping = buildResourceMapping(
       httpMethod,
       propertyKey,
@@ -63,7 +60,7 @@ function buildResourceMapping(
   propertyKey: string,
   resourcePath: string,
   target: object
-) {
+): RequestMapping {
   const resourceMapping: RequestMapping = {
     httpMethod,
     methodName: propertyKey,
@@ -83,7 +80,7 @@ function getResourceMappings(target: object): RequestMapping[] | undefined {
 function setResourceMappings(
   resourceMappings: RequestMapping[],
   target: object
-) {
+): void {
   Reflect.defineMetadata(
     METADATA_KEY_RESOURCE_MAPPINGS,
     resourceMappings,
