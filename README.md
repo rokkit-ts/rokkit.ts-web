@@ -100,7 +100,8 @@ _Currently in development_
 
 ## Contribution
 
-If you want to contribute to the project, please don't hesitate to send feedback, create issues or pull requests for open ones.
+All kinds of contributions are welcome, no matter how big or small.
+Before you start to contribute please read our [Code of Conduct](./CODE_OF_CONDUCT.md).
 
 ## License
 
