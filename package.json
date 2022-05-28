@@ -46,7 +46,7 @@
     "@rokkit.ts/abstract-module": "0.1.10",
     "@rokkit.ts/dependency-injection": "^0.4.0",
     "@rokkit.ts/logger": "^0.2.3",
-    "fs-extra": "^8.1.0",
+    "fs-extra": "^9.0.0",
     "minimist": "^1.2.5",
     "reflect-metadata": "^0.1.13",
     "restify": "^8.4.0"
